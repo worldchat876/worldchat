@@ -3,18 +3,20 @@
 <head>
   <meta name="monetag" content="6ca3dc7053a741b0d409e6c3a107b8a1">
   <meta name="google-site-verification" content="yZ56jFclXP1thT-Q-xCCVeO-i572oXejzlkq7I3O84o" />
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorldChat</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorldChat</title>
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
   background:#f5f7fb;
   color:#172033
 }
+
 .header{
   height:64px;
   background:white;
@@ -24,19 +26,23 @@ body{
   justify-content:space-between;
   padding:0 20px
 }
+
 .logo{
   font-size:21px;
   font-weight:700
 }
+
 .sub{
   color:#6b7280;
   font-size:14px
 }
+
 .wrap{
   max-width:900px;
   margin:25px auto;
   padding:0 15px
 }
+
 .card{
   background:white;
   border:1px solid #e5e7eb;
@@ -44,15 +50,18 @@ body{
   padding:20px;
   box-shadow:0 4px 18px rgba(0,0,0,.04)
 }
+
 h1,h2{
   margin-top:0
 }
+
 label{
   display:block;
   font-size:14px;
   font-weight:600;
   margin:12px 0 6px
 }
+
 input,select{
   width:100%;
   padding:12px;
@@ -61,14 +70,17 @@ input,select{
   outline:none;
   font-size:15px
 }
+
 input:focus,select:focus{
   border-color:#6366f1
 }
+
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px
 }
+
 .btn{
   border:0;
   background:#4f46e5;
@@ -78,10 +90,12 @@ input:focus,select:focus{
   cursor:pointer;
   font-weight:600
 }
+
 .btn.full{
   width:100%;
   margin-top:18px
 }
+
 .note{
   background:#f8fafc;
   border:1px solid #e5e7eb;
@@ -91,15 +105,18 @@ input:focus,select:focus{
   font-size:13px;
   color:#64748b
 }
+
 .toolbar{
   margin:15px 0
 }
+
 .users{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
   margin-bottom:15px
 }
+
 .user{
   border:1px solid #e5e7eb;
   background:#fff;
@@ -108,9 +125,11 @@ input:focus,select:focus{
   cursor:pointer;
   font-size:14px
 }
+
 .user:hover{
   background:#f8fafc
 }
+
 .messages,.private-messages{
   height:330px;
   overflow-y:auto;
@@ -119,6 +138,7 @@ input:focus,select:focus{
   border-radius:12px;
   padding:12px
 }
+
 .msg{
   background:white;
   border:1px solid #e5e7eb;
@@ -127,46 +147,55 @@ input:focus,select:focus{
   margin-bottom:8px;
   max-width:85%
 }
+
 .msg.mine{
   margin-left:auto;
   background:#eef2ff
 }
+
 .msg small{
   display:block;
   color:#6b7280;
   font-size:11px;
   margin-bottom:4px
 }
+
 .send{
   display:flex;
   gap:8px;
   margin-top:10px
 }
+
 .send input{
   flex:1
 }
+
 .private{
   display:none
 }
+
 .private-head{
   position:relative;
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
   border-bottom:1px solid #e5e7eb;
   padding-bottom:12px;
   margin-bottom:12px
 }
+
 .back,.dots{
   border:0;
   background:transparent;
   font-size:25px;
   cursor:pointer
 }
+
 .private-user{
   flex:1;
   font-weight:700
 }
+
 .private-user small{
   display:block;
   color:#6b7280;
@@ -174,6 +203,46 @@ input:focus,select:focus{
   font-size:12px;
   margin-top:3px
 }
+
+/* AD ICONS */
+
+.ad-icons{
+  display:flex;
+  gap:7px;
+  align-items:center;
+}
+
+.ad-icon{
+  position:relative;
+  width:42px;
+  height:38px;
+  border:1px solid #e5e7eb;
+  background:#fff;
+  border-radius:9px;
+  font-size:20px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.ad-icon:hover{
+  background:#f8fafc;
+}
+
+.ad-badge{
+  position:absolute;
+  right:-4px;
+  top:-6px;
+  font-size:8px;
+  line-height:12px;
+  padding:0 4px;
+  border-radius:5px;
+  background:#f3f4f6;
+  color:#6b7280;
+  font-weight:700;
+}
+
 .pmsg{
   background:white;
   border:1px solid #e5e7eb;
@@ -182,10 +251,12 @@ input:focus,select:focus{
   margin-bottom:8px;
   max-width:80%
 }
+
 .pmsg.mine{
   margin-left:auto;
   background:#eef2ff
 }
+
 .menu{
   display:none;
   position:absolute;
@@ -198,6 +269,7 @@ input:focus,select:focus{
   overflow:hidden;
   z-index:5
 }
+
 .menu button{
   display:block;
   width:150px;
@@ -207,28 +279,43 @@ input:focus,select:focus{
   padding:12px;
   cursor:pointer
 }
+
 .menu button:hover{
   background:#f3f4f6
 }
+
 .status{
   margin-top:10px;
   font-size:13px;
   color:#16a34a
 }
+
 .error{
   color:#dc2626
 }
 
 @media(max-width:600px){
+
   .grid{
     grid-template-columns:1fr
   }
+
   .send{
     flex-direction:row
   }
+
   .send .btn{
     padding-left:13px;
     padding-right:13px
+  }
+
+  .ad-icons{
+    gap:5px
+  }
+
+  .ad-icon{
+    width:38px;
+    height:36px;
   }
 }
 </style>
@@ -244,6 +331,7 @@ input:focus,select:focus{
 <main class="wrap">
 
 <!-- SETUP -->
+
 <section id="setup" class="card">
 
 <h1>Welcome to WorldChat 🌍</h1>
@@ -253,7 +341,11 @@ Create your profile and enter the global chat.
 </p>
 
 <label>Username</label>
-<input id="username" maxlength="20" placeholder="Choose a username">
+
+<input
+id="username"
+maxlength="20"
+placeholder="Choose a username">
 
 <div class="grid">
 
@@ -270,11 +362,13 @@ Create your profile and enter the global chat.
 <div>
 <label>Gender</label>
 <select id="gender">
+
 <option value="">Select</option>
 <option>Female</option>
 <option>Male</option>
 <option>Other</option>
 <option>Prefer not to say</option>
+
 </select>
 </div>
 
@@ -301,6 +395,7 @@ Enter WorldChat
 
 
 <!-- CHAT -->
+
 <section id="chat" class="card" style="display:none">
 
 <div id="globalArea">
@@ -310,10 +405,12 @@ Enter WorldChat
 <p id="info" class="sub"></p>
 
 <div class="toolbar">
+
 <input
 id="search"
 placeholder="Search username, country, language or gender..."
 oninput="renderUsers()">
+
 </div>
 
 <div id="users" class="users"></div>
@@ -347,6 +444,32 @@ Send
 
 <div id="privateUser" class="private-user"></div>
 
+<!-- AD ICONS -->
+
+<div class="ad-icons">
+
+<button class="ad-icon" onclick="openAd()">
+📹
+<span class="ad-badge">Ad</span>
+</button>
+
+<button class="ad-icon" onclick="openAd()">
+📞
+<span class="ad-badge">Ad</span>
+</button>
+
+<button class="ad-icon" onclick="openAd()">
+📷
+<span class="ad-badge">Ad</span>
+</button>
+
+<button class="ad-icon" onclick="openAd()">
+🖼️
+<span class="ad-badge">Ad</span>
+</button>
+
+</div>
+
 <button class="dots" onclick="toggleMenu()">⋮</button>
 
 <div id="menu" class="menu">
@@ -366,6 +489,7 @@ Send
 </div>
 
 </div>
+
 
 <div id="privateMessages" class="private-messages"></div>
 
@@ -400,55 +524,74 @@ Send
 <script>
 
 const firebaseConfig = {
+
   apiKey: "AIzaSyCxMbGWolalaS_RQgjqyls44Lkn9lsWFYE",
+
   authDomain: "worldchat-4fc51.firebaseapp.com",
+
   projectId: "worldchat-4fc51",
+
   storageBucket: "worldchat-4fc51.firebasestorage.app",
+
   messagingSenderId: "569064178427",
+
   appId: "1:569064178427:web:7c65020d3dec55597a265e"
+
 };
 
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
+
 const db = firebase.firestore();
 
 let firebaseUid = null;
+
 let me = null;
+
 let privateUser = null;
+
 let privateUnsub = null;
+
 let globalUnsub = null;
+
 let usersUnsub = null;
 
 let blocked = new Set();
 
 let users = [];
 
+
 const demoUsers = [
-  {
-    name:"Alex",
-    country:"US",
-    language:"English",
-    gender:"Male"
-  },
-  {
-    name:"Maya",
-    country:"IN",
-    language:"Hindi",
-    gender:"Female"
-  },
-  {
-    name:"Ken",
-    country:"JP",
-    language:"Japanese",
-    gender:"Male"
-  },
-  {
-    name:"Lina",
-    country:"DE",
-    language:"German",
-    gender:"Female"
-  }
+
+{
+name:"Alex",
+country:"US",
+language:"English",
+gender:"Male"
+},
+
+{
+name:"Maya",
+country:"IN",
+language:"Hindi",
+gender:"Female"
+},
+
+{
+name:"Ken",
+country:"JP",
+language:"Japanese",
+gender:"Male"
+},
+
+{
+name:"Lina",
+country:"DE",
+language:"German",
+gender:"Female"
+}
+
 ];
 
 
@@ -514,801 +657,810 @@ const languages = [
 ];
 
 
-// COUNTRY OPTIONS
-
 countries.forEach(c=>{
 
-  const o=document.createElement("option");
+const o=document.createElement("option");
 
-  o.value=c[0];
+o.value=c[0];
 
-  o.textContent=c[1]+" "+c[2];
+o.textContent=c[1]+" "+c[2];
 
-  document.getElementById("country").appendChild(o);
+document.getElementById("country").appendChild(o);
 
 });
 
-
-// LANGUAGE OPTIONS
 
 languages.forEach(l=>{
 
-  const o=document.createElement("option");
+const o=document.createElement("option");
 
-  o.textContent=l;
+o.textContent=l;
 
-  o.value=l;
+o.value=l;
 
-  document.getElementById("language").appendChild(o);
+document.getElementById("language").appendChild(o);
 
 });
 
 
-// AGE OPTIONS
-
 for(let i=18;i<=100;i++){
 
-  const o=document.createElement("option");
+const o=document.createElement("option");
 
-  o.value=i;
+o.value=i;
 
-  o.textContent=i;
+o.textContent=i;
 
-  document.getElementById("age").appendChild(o);
+document.getElementById("age").appendChild(o);
 
 }
 
 
 document.getElementById("country").value="LK";
+
 document.getElementById("language").value="English";
 
 
-// COUNTRY FINDER
-
 function getCountry(code){
 
-  return countries.find(c=>c[0]===code) || countries[0];
+return countries.find(c=>c[0]===code) || countries[0];
 
 }
 
-
-// FIREBASE AUTH READY
 
 const authReady = auth.signInAnonymously()
 
 .then(result=>{
 
-  firebaseUid=result.user.uid;
+firebaseUid=result.user.uid;
 
-  console.log("Firebase UID:",firebaseUid);
+console.log("Firebase UID:",firebaseUid);
 
 })
 
 .catch(error=>{
 
-  console.error(error);
+console.error(error);
 
-  document.getElementById("status").innerHTML =
-  "<span class='error'>Firebase connection failed.</span>";
+document.getElementById("status").innerHTML =
+"<span class='error'>Firebase connection failed.</span>";
 
 });
 
 
-// ENTER CHAT
-
 async function enterChat(){
 
-  const name=document.getElementById("username").value.trim();
+const name=document.getElementById("username").value.trim();
 
-  const country=document.getElementById("country").value;
+const country=document.getElementById("country").value;
 
-  const language=document.getElementById("language").value;
+const language=document.getElementById("language").value;
 
-  const gender=document.getElementById("gender").value;
+const gender=document.getElementById("gender").value;
 
-  const age=document.getElementById("age").value;
-
-
-  if(!name){
-
-    alert("Please enter a username.");
-
-    return;
-
-  }
-
-  if(!country || !language || !gender || !age){
-
-    alert("Please complete your profile.");
-
-    return;
-
-  }
+const age=document.getElementById("age").value;
 
 
-  me={
-    name:name,
-    country:country,
-    language:language,
-    gender:gender,
-    age:age,
-    uid:null
-  };
+if(!name){
 
+alert("Please enter a username.");
 
-  const c=getCountry(country);
-
-
-  document.getElementById("mini").textContent =
-  c[1]+" "+name;
-
-
-  document.getElementById("setup").style.display="none";
-
-  document.getElementById("chat").style.display="block";
-
-
-  document.getElementById("info").textContent =
-  c[1]+" "+c[2]+" • "+language;
-
-
-  document.getElementById("status").textContent =
-  "Connecting to WorldChat...";
-
-
-  try{
-
-    await authReady;
-
-    if(!firebaseUid){
-
-      throw new Error("Firebase authentication failed");
-
-    }
-
-
-    me.uid=firebaseUid;
-
-
-    // SAVE USER
-
-    await db.collection("users")
-    .doc(firebaseUid)
-    .set({
-
-      uid:firebaseUid,
-      name:name,
-      country:country,
-      language:language,
-      gender:gender,
-
-      // Do not publish exact age
-      ageBand:getAgeBand(age),
-
-      updatedAt:
-      firebase.firestore.FieldValue.serverTimestamp()
-
-    },{merge:true});
-
-
-    document.getElementById("status").textContent =
-    "Connected ✓";
-
-
-    listenUsers();
-
-    listenGlobalMessages();
-
-  }
-  catch(error){
-
-    console.error(error);
-
-    document.getElementById("status").innerHTML =
-    "<span class='error'>Firebase error. Check Authentication and Firestore Rules.</span>";
-
-  }
+return;
 
 }
 
 
-// AGE BAND
+if(!country || !language || !gender || !age){
+
+alert("Please complete your profile.");
+
+return;
+
+}
+
+
+me={
+
+name:name,
+
+country:country,
+
+language:language,
+
+gender:gender,
+
+age:age,
+
+uid:null
+
+};
+
+
+const c=getCountry(country);
+
+
+document.getElementById("mini").textContent =
+c[1]+" "+name;
+
+
+document.getElementById("setup").style.display="none";
+
+document.getElementById("chat").style.display="block";
+
+
+document.getElementById("info").textContent =
+c[1]+" "+c[2]+" • "+language;
+
+
+document.getElementById("status").textContent =
+"Connecting to WorldChat...";
+
+
+try{
+
+await authReady;
+
+
+if(!firebaseUid){
+
+throw new Error("Firebase authentication failed");
+
+}
+
+
+me.uid=firebaseUid;
+
+
+await db.collection("users")
+.doc(firebaseUid)
+.set({
+
+uid:firebaseUid,
+
+name:name,
+
+country:country,
+
+language:language,
+
+gender:gender,
+
+ageBand:getAgeBand(age),
+
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+},{merge:true});
+
+
+document.getElementById("status").textContent =
+"Connected ✓";
+
+
+listenUsers();
+
+listenGlobalMessages();
+
+}
+
+catch(error){
+
+console.error(error);
+
+document.getElementById("status").innerHTML =
+"<span class='error'>Firebase error. Check Authentication and Firestore Rules.</span>";
+
+}
+
+}
+
 
 function getAgeBand(age){
 
-  age=Number(age);
+age=Number(age);
 
-  if(age<=24)return "18-24";
+if(age<=24)return "18-24";
 
-  if(age<=34)return "25-34";
+if(age<=34)return "25-34";
 
-  if(age<=44)return "35-44";
+if(age<=44)return "35-44";
 
-  if(age<=54)return "45-54";
+if(age<=54)return "45-54";
 
-  if(age<=64)return "55-64";
+if(age<=64)return "55-64";
 
-  return "65+";
+return "65+";
 
 }
 
-
-// USERS REAL-TIME
 
 function listenUsers(){
 
-  if(usersUnsub) usersUnsub();
+if(usersUnsub) usersUnsub();
 
 
-  usersUnsub =
-  db.collection("users")
-  .onSnapshot(snapshot=>{
+usersUnsub =
+db.collection("users")
+.onSnapshot(snapshot=>{
 
-    const remote=[];
-
-
-    snapshot.forEach(doc=>{
-
-      const u=doc.data();
-
-      if(u.uid!==firebaseUid){
-
-        remote.push({
-
-          name:u.name || "User",
-          country:u.country || "LK",
-          language:u.language || "English",
-          gender:u.gender || "",
-          ageBand:u.ageBand || "",
-          uid:u.uid
-
-        });
-
-      }
-
-    });
+const remote=[];
 
 
-    users=[
-      {
-        name:me.name,
-        country:me.country,
-        language:me.language,
-        gender:me.gender,
-        uid:firebaseUid
-      },
-      ...remote
-    ];
+snapshot.forEach(doc=>{
+
+const u=doc.data();
 
 
-    renderUsers();
+if(u.uid!==firebaseUid){
 
-  },error=>{
+remote.push({
 
-    console.error("Users error:",error);
+name:u.name || "User",
 
-  });
+country:u.country || "LK",
+
+language:u.language || "English",
+
+gender:u.gender || "",
+
+ageBand:u.ageBand || "",
+
+uid:u.uid
+
+});
 
 }
 
+});
 
-// RENDER USERS
+
+users=[
+
+{
+
+name:me.name,
+
+country:me.country,
+
+language:me.language,
+
+gender:me.gender,
+
+uid:firebaseUid
+
+},
+
+...remote
+
+];
+
+
+renderUsers();
+
+},error=>{
+
+console.error("Users error:",error);
+
+});
+
+}
+
 
 function renderUsers(){
 
-  const box=document.getElementById("users");
+const box=document.getElementById("users");
 
-  const search=
-  document.getElementById("search").value
-  .trim()
-  .toLowerCase();
-
-
-  box.innerHTML="";
+const search=
+document.getElementById("search").value
+.trim()
+.toLowerCase();
 
 
-  users
-  .filter(u=>!blocked.has(u.name))
-  .filter(u=>{
+box.innerHTML="";
 
-    const c=getCountry(u.country);
 
-    const text=
-    u.name+" "+
-    c[2]+" "+
-    u.language+" "+
-    u.gender;
+users
 
-    return text.toLowerCase().includes(search);
+.filter(u=>!blocked.has(u.name))
 
-  })
-  .forEach(u=>{
+.filter(u=>{
 
-    const c=getCountry(u.country);
+const c=getCountry(u.country);
 
-    const div=document.createElement("div");
+const text=
+u.name+" "+
+c[2]+" "+
+u.language+" "+
+u.gender;
 
-    div.className="user";
+return text.toLowerCase().includes(search);
 
-    div.textContent=
-    c[1]+" "+u.name;
+})
 
-    if(u.uid===firebaseUid){
+.forEach(u=>{
 
-      div.textContent+=" (You)";
+const c=getCountry(u.country);
 
-    }
-    else{
+const div=document.createElement("div");
 
-      div.onclick=()=>openPrivateChat(u);
+div.className="user";
 
-    }
+div.textContent=
+c[1]+" "+u.name;
 
-    box.appendChild(div);
 
-  });
+if(u.uid===firebaseUid){
+
+div.textContent+=" (You)";
+
+}
+
+else{
+
+div.onclick=()=>openPrivateChat(u);
 
 }
 
 
-// GLOBAL CHAT REAL-TIME
+box.appendChild(div);
+
+});
+
+}
+
 
 function listenGlobalMessages(){
 
-  if(globalUnsub) globalUnsub();
+if(globalUnsub) globalUnsub();
 
 
-  globalUnsub =
-  db.collection("globalMessages")
-  .orderBy("createdAt","asc")
-  .limitToLast(100)
-  .onSnapshot(snapshot=>{
+globalUnsub =
+db.collection("globalMessages")
+.orderBy("createdAt","asc")
+.limitToLast(100)
+.onSnapshot(snapshot=>{
 
-    const box=document.getElementById("messages");
+const box=document.getElementById("messages");
 
-    box.innerHTML="";
-
-
-    snapshot.forEach(doc=>{
-
-      const m=doc.data();
-
-      addGlobalMessage(m);
-
-    });
+box.innerHTML="";
 
 
-    box.scrollTop=box.scrollHeight;
+snapshot.forEach(doc=>{
 
-  },error=>{
+const m=doc.data();
 
-    console.error("Global chat:",error);
+addGlobalMessage(m);
 
-  });
+});
+
+
+box.scrollTop=box.scrollHeight;
+
+},error=>{
+
+console.error("Global chat:",error);
+
+});
 
 }
 
-
-// ADD GLOBAL MESSAGE
 
 function addGlobalMessage(m){
 
-  const box=document.getElementById("messages");
+const box=document.getElementById("messages");
 
-  const div=document.createElement("div");
+const div=document.createElement("div");
 
-  div.className="msg";
-
-
-  if(m.uid===firebaseUid){
-
-    div.classList.add("mine");
-
-  }
+div.className="msg";
 
 
-  const c=getCountry(m.country || "LK");
+if(m.uid===firebaseUid){
 
-
-  const small=document.createElement("small");
-
-  small.textContent=
-  c[1]+" "+(m.name || "User");
-
-
-  const text=document.createElement("div");
-
-  text.textContent=m.text || "";
-
-
-  div.appendChild(small);
-
-  div.appendChild(text);
-
-  box.appendChild(div);
+div.classList.add("mine");
 
 }
 
 
-// SEND GLOBAL MESSAGE
+const c=getCountry(m.country || "LK");
+
+
+const small=document.createElement("small");
+
+small.textContent=
+c[1]+" "+(m.name || "User");
+
+
+const text=document.createElement("div");
+
+text.textContent=m.text || "";
+
+
+div.appendChild(small);
+
+div.appendChild(text);
+
+box.appendChild(div);
+
+}
+
 
 async function sendMessage(){
 
-  const input=document.getElementById("message");
+const input=document.getElementById("message");
 
-  const text=input.value.trim();
-
-
-  if(!text)return;
+const text=input.value.trim();
 
 
-  if(!firebaseUid){
-
-    alert("Please wait for Firebase connection.");
-
-    return;
-
-  }
+if(!text)return;
 
 
-  try{
+if(!firebaseUid){
 
-    await db.collection("globalMessages").add({
+alert("Please wait for Firebase connection.");
 
-      uid:firebaseUid,
-
-      name:me.name,
-
-      country:me.country,
-
-      text:text,
-
-      createdAt:
-      firebase.firestore.FieldValue.serverTimestamp()
-
-    });
-
-
-    input.value="";
-
-  }
-  catch(error){
-
-    console.error(error);
-
-    alert("Message could not be sent.");
-
-  }
+return;
 
 }
 
 
-// PRIVATE CHAT ID
+try{
+
+await db.collection("globalMessages").add({
+
+uid:firebaseUid,
+
+name:me.name,
+
+country:me.country,
+
+text:text,
+
+createdAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+
+input.value="";
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert("Message could not be sent.");
+
+}
+
+}
+
 
 function chatId(a,b){
 
-  return [a,b].sort().join("_");
+return [a,b].sort().join("_");
 
 }
 
-
-// OPEN PRIVATE CHAT
 
 function openPrivateChat(u){
 
-  if(!u)return;
+if(!u)return;
 
-  if(blocked.has(u.name))return;
-
-  if(!u.uid){
-
-    alert("This user is not connected to Firebase.");
-
-    return;
-
-  }
+if(blocked.has(u.name))return;
 
 
-  privateUser=u;
+if(!u.uid){
 
+alert("This user is not connected to Firebase.");
 
-  document.getElementById("globalArea").style.display="none";
-
-  document.getElementById("privateChat").style.display="block";
-
-
-  const c=getCountry(u.country);
-
-
-  document.getElementById("privateUser").innerHTML=
-  c[1]+" "+escapeHtml(u.name)+
-  "<small>"+escapeHtml(c[2])+
-  " • "+escapeHtml(u.language)+
-  "</small>";
-
-
-  document.getElementById("menu").style.display="none";
-
-
-  listenPrivateMessages(u);
+return;
 
 }
 
 
-// PRIVATE REAL-TIME LISTENER
+privateUser=u;
+
+
+document.getElementById("globalArea").style.display="none";
+
+document.getElementById("privateChat").style.display="block";
+
+
+const c=getCountry(u.country);
+
+
+document.getElementById("privateUser").innerHTML=
+c[1]+" "+escapeHtml(u.name)+
+"<small>"+escapeHtml(c[2])+
+" • "+escapeHtml(u.language)+
+"</small>";
+
+
+document.getElementById("menu").style.display="none";
+
+
+listenPrivateMessages(u);
+
+}
+
 
 function listenPrivateMessages(u){
 
-  if(privateUnsub)privateUnsub();
+if(privateUnsub)privateUnsub();
 
 
-  const id=chatId(firebaseUid,u.uid);
+const id=chatId(firebaseUid,u.uid);
 
 
-  const chatRef=
-  db.collection("privateChats").doc(id);
+const chatRef=
+db.collection("privateChats").doc(id);
 
 
-  // CREATE / UPDATE CHAT PARTICIPANTS
+chatRef.set({
 
-  chatRef.set({
+participants:[firebaseUid,u.uid],
 
-    participants:[firebaseUid,u.uid],
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
 
-    updatedAt:
-    firebase.firestore.FieldValue.serverTimestamp()
-
-  },{merge:true});
+},{merge:true});
 
 
-  privateUnsub=
-  chatRef
-  .collection("messages")
-  .orderBy("createdAt","asc")
-  .limitToLast(100)
-  .onSnapshot(snapshot=>{
+privateUnsub=
+chatRef
+.collection("messages")
+.orderBy("createdAt","asc")
+.limitToLast(100)
+.onSnapshot(snapshot=>{
 
-    const box=document.getElementById("privateMessages");
+const box=document.getElementById("privateMessages");
 
-    box.innerHTML="";
-
-
-    snapshot.forEach(doc=>{
-
-      const m=doc.data();
-
-      const div=document.createElement("div");
-
-      div.className="pmsg";
+box.innerHTML="";
 
 
-      if(m.uid===firebaseUid){
+snapshot.forEach(doc=>{
 
-        div.classList.add("mine");
+const m=doc.data();
 
-      }
+const div=document.createElement("div");
 
-
-      div.textContent=m.text || "";
-
-      box.appendChild(div);
-
-    });
+div.className="pmsg";
 
 
-    box.scrollTop=box.scrollHeight;
+if(m.uid===firebaseUid){
 
-  },error=>{
-
-    console.error("Private chat:",error);
-
-  });
+div.classList.add("mine");
 
 }
 
 
-// SEND PRIVATE MESSAGE
+div.textContent=m.text || "";
+
+box.appendChild(div);
+
+});
+
+
+box.scrollTop=box.scrollHeight;
+
+},error=>{
+
+console.error("Private chat:",error);
+
+});
+
+}
+
 
 async function sendPrivateMessage(){
 
-  const input=document.getElementById("privateMessage");
+const input=document.getElementById("privateMessage");
 
-  const text=input.value.trim();
-
-
-  if(!text || !privateUser)return;
+const text=input.value.trim();
 
 
-  if(!firebaseUid){
-
-    alert("Firebase is not connected.");
-
-    return;
-
-  }
+if(!text || !privateUser)return;
 
 
-  try{
+if(!firebaseUid){
 
-    const id=chatId(firebaseUid,privateUser.uid);
+alert("Firebase is not connected.");
 
-
-    const chatRef=
-    db.collection("privateChats").doc(id);
-
-
-    await chatRef.set({
-
-      participants:[firebaseUid,privateUser.uid],
-
-      updatedAt:
-      firebase.firestore.FieldValue.serverTimestamp()
-
-    },{merge:true});
-
-
-    await chatRef
-    .collection("messages")
-    .add({
-
-      uid:firebaseUid,
-
-      text:text,
-
-      createdAt:
-      firebase.firestore.FieldValue.serverTimestamp()
-
-    });
-
-
-    input.value="";
-
-  }
-  catch(error){
-
-    console.error(error);
-
-    alert("Private message could not be sent. Check Firestore Rules.");
-
-  }
+return;
 
 }
 
 
-// CLOSE PRIVATE CHAT
+try{
+
+const id=chatId(firebaseUid,privateUser.uid);
+
+
+const chatRef=
+db.collection("privateChats").doc(id);
+
+
+await chatRef.set({
+
+participants:[firebaseUid,privateUser.uid],
+
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+},{merge:true});
+
+
+await chatRef
+.collection("messages")
+.add({
+
+uid:firebaseUid,
+
+text:text,
+
+createdAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+
+input.value="";
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert("Private message could not be sent. Check Firestore Rules.");
+
+}
+
+}
+
 
 function closePrivateChat(){
 
-  if(privateUnsub){
+if(privateUnsub){
 
-    privateUnsub();
+privateUnsub();
 
-    privateUnsub=null;
-
-  }
-
-
-  privateUser=null;
-
-
-  document.getElementById("privateChat").style.display="none";
-
-  document.getElementById("globalArea").style.display="block";
-
-  document.getElementById("menu").style.display="none";
+privateUnsub=null;
 
 }
 
 
-// MENU
+privateUser=null;
+
+
+document.getElementById("privateChat").style.display="none";
+
+document.getElementById("globalArea").style.display="block";
+
+document.getElementById("menu").style.display="none";
+
+}
+
 
 function toggleMenu(){
 
-  const menu=document.getElementById("menu");
+const menu=document.getElementById("menu");
 
-  menu.style.display=
-  menu.style.display==="block"
-  ? "none"
-  : "block";
+menu.style.display=
+menu.style.display==="block"
+? "none"
+: "block";
 
 }
 
-
-// VIEW PROFILE
 
 function viewProfile(){
 
-  if(!privateUser)return;
+if(!privateUser)return;
 
 
-  const c=getCountry(privateUser.country);
+const c=getCountry(privateUser.country);
 
 
-  alert(
-    "Username: "+privateUser.name+
-    "\nCountry: "+c[1]+" "+c[2]+
-    "\nLanguage: "+privateUser.language+
-    "\nGender: "+privateUser.gender
-  );
+alert(
+
+"Username: "+privateUser.name+
+
+"\nCountry: "+c[1]+" "+c[2]+
+
+"\nLanguage: "+privateUser.language+
+
+"\nGender: "+privateUser.gender
+
+);
 
 
-  document.getElementById("menu").style.display="none";
+document.getElementById("menu").style.display="none";
 
 }
 
-
-// BLOCK
 
 function blockUser(){
 
-  if(!privateUser)return;
+if(!privateUser)return;
 
 
-  blocked.add(privateUser.name);
+blocked.add(privateUser.name);
 
 
-  alert(
-    privateUser.name+
-    " has been blocked."
-  );
+alert(
+privateUser.name+
+" has been blocked."
+);
 
 
-  closePrivateChat();
+closePrivateChat();
 
-  renderUsers();
+renderUsers();
 
 }
 
-
-// REPORT
 
 async function reportUser(){
 
-  if(!privateUser)return;
+if(!privateUser)return;
 
 
-  try{
+try{
 
-    await db.collection("reports").add({
+await db.collection("reports").add({
 
-      reporterUid:firebaseUid,
+reporterUid:firebaseUid,
 
-      reportedUid:privateUser.uid,
+reportedUid:privateUser.uid,
 
-      reportedName:privateUser.name,
+reportedName:privateUser.name,
 
-      createdAt:
-      firebase.firestore.FieldValue.serverTimestamp()
+createdAt:
+firebase.firestore.FieldValue.serverTimestamp()
 
-    });
-
-
-    alert("Report submitted.");
-
-  }
-  catch(error){
-
-    console.error(error);
-
-    alert("Report could not be submitted.");
-
-  }
+});
 
 
-  document.getElementById("menu").style.display="none";
+alert("Report submitted.");
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert("Report could not be submitted.");
 
 }
 
 
-// HTML ESCAPE
+document.getElementById("menu").style.display="none";
+
+}
+
+
+/* DIRECT LINK AD */
+
+function openAd(){
+
+window.open(
+"https://omg10.com/4/11926015",
+"_blank",
+"noopener,noreferrer"
+);
+
+}
+
 
 function escapeHtml(text){
 
-  const div=document.createElement("div");
+const div=document.createElement("div");
 
-  div.textContent=text;
+div.textContent=text;
 
-  return div.innerHTML;
+return div.innerHTML;
 
 }
 
