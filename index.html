@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WorldChat</title>
+<style>
+body{font-family:Arial;margin:0;background:#eef2f7;color:#172033}
+.header{background:#fff;padding:16px 20px;display:flex;justify-content:space-between;border-bottom:1px solid #ddd}
+.logo{font-weight:800;color:#2563eb;font-size:22px}
+.wrap{max-width:900px;margin:25px auto;padding:0 15px}
+.card{background:white;padding:24px;border-radius:18px;box-shadow:0 8px 30px #0001}
+input,select,button{font:inherit}
+input,select{width:100%;padding:12px;border:1px solid #d5dae3;border-radius:10px;box-sizing:border-box}
+label{display:block;font-weight:bold;margin:14px 0 7px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.btn{border:0;background:#2563eb;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;cursor:pointer}
+.full{width:100%;margin-top:18px}
+.note{margin-top:14px;background:#f8fafc;padding:10px;font-size:12px;color:#667085;border-radius:10px}
+.sub{color:#667085;font-size:14px}
+#chat{display:none}
+.toolbar{margin:18px 0}
+.users{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
+.user{background:#f8fafc;border:1px solid #e2e7ef;padding:8px 11px;border-radius:999px;font-size:13px;cursor:pointer}
+.user:hover{background:#eaf2ff}
+.messages{height:400px;overflow:auto;background:#f8fafc;border:1px solid #e2e7ef;border-radius:14px;padding:15px}
+.msg{display:flex;margin:8px 0}
+.me{justify-content:flex-end}
+.bubble{max-width:78%;background:#fff;border:1px solid #e1e6ee;border-radius:14px;padding:9px 12px}
+.me .bubble{background:#eaf2ff}
+.meta{font-size:12px;font-weight:bold;margin-bottom:4px}
+.send{display:flex;gap:10px;margin-top:12px}
+.send input{flex:1}
+
+.private{display:none}
+.private-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid #e2e7ef;position:relative}
+.back{border:0;background:#f1f5f9;border-radius:10px;padding:9px 12px;cursor:pointer;font-size:18px}
+.private-user{font-weight:800;flex:1}
+.dots{border:0;background:transparent;font-size:24px;cursor:pointer}
+.menu{display:none;position:absolute;right:0;top:45px;background:#fff;border:1px solid #ddd;border-radius:10px;box-shadow:0 8px 25px #0002;z-index:5;overflow:hidden}
+.menu button{display:block;width:130px;text-align:left;border:0;background:#fff;padding:11px 14px;cursor:pointer}
+.menu button:hover{background:#f1f5f9}
+.private-messages{height:330px;overflow:auto;background:#f8fafc;border:1px solid #e2e7ef;border-radius:14px;padding:15px;margin-top:12px}
+.pmsg{display:flex;margin:8px 0}
+.pmsg.mine{justify-content:flex-end}
+.ptext{max-width:78%;padding:9px 12px;border-radius:14px;background:#fff;border:1px solid #e1e6ee}
+.pmsg.mine .ptext{background:#eaf2ff}
+.start-note{text-align:center;color:#667085;font-size:13px;padding:25px}
+
+@media(max-width:650px){
+.grid{grid-template-columns:1fr}
+.send .btn{padding:12px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+<div class="logo">🌍 WorldChat</div>
+<div id="mini" class="sub"></div>
+</header>
+
+<main class="wrap">
+
+<section id="setup" class="card">
+
+<h1>Welcome to WorldChat 🌍</h1>
+<p class="sub">Create your profile and enter the global chat.</p>
+
+<label>Username</label>
+<input id="username" maxlength="20" placeholder="Choose a username">
+
+<div class="grid">
+
+<div>
+<label>Country</label>
+<select id="country"></select>
+</div>
+
+<div>
+<label>Language</label>
+<select id="language"></select>
+</div>
+
+<div>
+<label>Gender</label>
+<select id="gender">
+<option value="">Select</option>
+<option>Female</option>
+<option>Male</option>
+<option>Other</option>
+<option>Prefer not to say</option>
+</select>
+</div>
+
+<div>
+<label>Age</label>
+<select id="age"></select>
+</div>
+
+</div>
+
+<div class="note">
+This front-end demo stores nothing online. For a public chat service, this version accepts adults (18+) only.
+</div>
+
+<button class="btn full" onclick="enterChat()">Enter WorldChat</button>
+
+</section>
+
+
+<section id="chat" class="card">
+
+<h2>Global Chat 💬</h2>
+<p id="info" class="sub"></p>
+
+<div id="globalArea">
+
+<div class="toolbar">
+<input id="search" placeholder="Search username, country, language or gender..." oninput="renderUsers()">
+</div>
+
+<div id="users" class="users"></div>
+
+<div id="messages" class="messages"></div>
+
+<div class="send">
+<input id="message" maxlength="300" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendMessage()">
+<button class="btn" onclick="sendMessage()">Send</button>
+</div>
+
+</div>
+
+
+<div id="privateChat" class="private">
+
+<div class="private-head">
+
+<button class="back" onclick="closePrivateChat()">←</button>
+
+<div id="privateUser" class="private-user"></div>
+
+<button class="dots" onclick="toggleMenu()">⋮</button>
+
+<div id="menu" class="menu">
+<button onclick="blockUser()">🚫 Block</button>
+<button onclick="reportUser()">⚠️ Report</button>
+</div>
+
+</div>
+
+<div id="privateMessages" class="private-messages"></div>
+
+<div class="send">
+
+<input id="privateMessage" maxlength="300" placeholder="Write a private message..." onkeydown="if(event.key==='Enter')sendPrivateMessage()">
+
+<button class="btn" onclick="sendPrivateMessage()">Send</button>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<script>
+
+const countries=[
+['LK','🇱🇰','Sri Lanka'],
+['US','🇺🇸','United States'],
+['GB','🇬🇧','United Kingdom'],
+['IN','🇮🇳','India'],
+['CA','🇨🇦','Canada'],
+['AU','🇦🇺','Australia'],
+['DE','🇩🇪','Germany'],
+['FR','🇫🇷','France'],
+['IT','🇮🇹','Italy'],
+['ES','🇪🇸','Spain'],
+['BR','🇧🇷','Brazil'],
+['JP','🇯🇵','Japan'],
+['KR','🇰🇷','South Korea'],
+['CN','🇨🇳','China'],
+['RU','🇷🇺','Russia'],
+['AE','🇦🇪','United Arab Emirates'],
+['SA','🇸🇦','Saudi Arabia'],
+['SG','🇸🇬','Singapore'],
+['MY','🇲🇾','Malaysia'],
+['TH','🇹🇭','Thailand'],
+['PH','🇵🇭','Philippines'],
+['ID','🇮🇩','Indonesia'],
+['PK','🇵🇰','Pakistan'],
+['BD','🇧🇩','Bangladesh'],
+['NP','🇳🇵','Nepal'],
+['NZ','🇳🇿','New Zealand'],
+['ZA','🇿🇦','South Africa'],
+['MX','🇲🇽','Mexico'],
+['TR','🇹🇷','Türkiye'],
+['NL','🇳🇱','Netherlands']
+];
+
+const languages=[
+'English','Sinhala','Tamil','Hindi','Spanish','French','German',
+'Italian','Portuguese','Arabic','Japanese','Korean','Chinese',
+'Russian','Turkish','Dutch','Malay','Thai','Bengali','Nepali'
+];
+
+for(const c of countries){
+let o=document.createElement('option');
+o.value=c[0];
+o.textContent=c[1]+' '+c[2];
+country.appendChild(o);
+}
+
+for(const l of languages){
+let o=document.createElement('option');
+o.value=l;
+o.textContent=l;
+language.appendChild(o);
+}
+
+for(let i=18;i<=100;i++){
+let o=document.createElement('option');
+o.value=i;
+o.textContent=i;
+age.appendChild(o);
+}
+
+
+let me=null;
+
+let users=[
+{name:'Alex',country:'US',language:'English',gender:'Male',age:24},
+{name:'Maya',country:'IN',language:'Hindi',gender:'Female',age:22},
+{name:'Ken',country:'JP',language:'Japanese',gender:'Male',age:28},
+{name:'Lina',country:'DE',language:'German',gender:'Female',age:25},
+{name:'Arun',country:'LK',language:'Sinhala',gender:'Male',age:21}
+];
+
+let privateUser=null;
+let privateChats={};
+
+
+function gc(x){
+return countries.find(c=>c[0]===x)||['','🌐','Unknown'];
+}
+
+
+function enterChat(){
+
+let name=username.value.trim();
+
+if(!name||!country.value||!language.value||!gender.value||!age.value){
+alert('Please complete all profile fields.');
+return;
+}
+
+me={
+name,
+country:country.value,
+language:language.value,
+gender:gender.value,
+age:+age.value
+};
+
+users=[
+me,
+...users.filter(u=>u.name.toLowerCase()!=name.toLowerCase())
+];
+
+setup.style.display='none';
+chat.style.display='block';
+
+let c=gc(me.country);
+
+mini.textContent=c[1]+' '+name;
+
+info.textContent=c[1]+' '+name+' • '+me.language+' • '+me.gender+' • Age '+me.age;
+
+renderUsers();
+
+addMessage('WorldChat','Welcome! Select a user to start a private chat.',false);
+
+}
+
+
+function renderUsers(){
+
+let q=search.value.toLowerCase().trim();
+
+let usersDiv=document.getElementById('users');
+
+usersDiv.innerHTML='';
+
+users
+.filter(u=>{
+
+let c=gc(u.country);
+
+return(
+u.name+' '+c[2]+' '+u.language+' '+u.gender
+)
+.toLowerCase()
+.includes(q);
+
+})
+.forEach(u=>{
+
+let c=gc(u.country);
+
+let d=document.createElement('button');
+
+d.className='user';
+d.type='button';
+
+d.textContent=c[1]+' '+u.name;
+
+d.title=c[2]+' • '+u.language+' • '+u.gender;
+
+d.onclick=()=>openPrivateChat(u);
+
+usersDiv.appendChild(d);
+
+});
+
+}
+
+
+function sendMessage(){
+
+let v=message.value.trim();
+
+if(!v)return;
+
+addMessage(me.name,v,true);
+
+message.value='';
+
+}
+
+
+function addMessage(name,text,isMe){
+
+let r=document.createElement('div');
+
+r.className='msg'+(isMe?' me':'');
+
+let b=document.createElement('div');
+
+b.className='bubble';
+
+let m=document.createElement('div');
+
+m.className='meta';
+
+m.textContent=isMe?'You':name;
+
+let t=document.createElement('div');
+
+t.textContent=text;
+
+b.append(m,t);
+
+r.appendChild(b);
+
+messages.appendChild(r);
+
+messages.scrollTop=messages.scrollHeight;
+
+}
+
+
+function openPrivateChat(u){
+
+if(!u||u.name===me.name)return;
+
+privateUser=u;
+
+globalArea.style.display='none';
+
+privateChat.style.display='block';
+
+let c=gc(u.country);
+
+privateUserEl=document.getElementById('privateUser');
+
+privateUserEl.textContent=c[1]+' '+u.name;
+
+menu.style.display='none';
+
+renderPrivateMessages();
+
+}
+
+
+function closePrivateChat(){
+
+privateUser=null;
+
+privateChat.style.display='none';
+
+globalArea.style.display='block';
+
+menu.style.display='none';
+
+}
+
+
+function toggleMenu(){
+
+menu.style.display=
+menu.style.display==='block'
+?'none'
+:'block';
+
+}
+
+
+function renderPrivateMessages(){
+
+let box=document.getElementById('privateMessages');
+
+box.innerHTML='';
+
+let key=privateUser.name;
+
+let list=privateChats[key]||[];
+
+if(!list.length){
+
+let n=document.createElement('div');
+
+n.className='start-note';
+
+n.textContent='Start a private chat with '+privateUser.name+'.';
+
+box.appendChild(n);
+
+return;
+
+}
+
+for(const item of list){
+
+let r=document.createElement('div');
+
+r.className='pmsg'+(item.mine?' mine':'');
+
+let b=document.createElement('div');
+
+b.className='ptext';
+
+b.textContent=item.text;
+
+r.appendChild(b);
+
+box.appendChild(r);
+
+}
+
+box.scrollTop=box.scrollHeight;
+
+}
+
+
+function sendPrivateMessage(){
+
+let v=privateMessage.value.trim();
+
+if(!v||!privateUser)return;
+
+let key=privateUser.name;
+
+if(!privateChats[key])privateChats[key]=[];
+
+privateChats[key].push({
+text:v,
+mine:true
+});
+
+privateMessage.value='';
+
+renderPrivateMessages();
+
+}
+
+
+function blockUser(){
+
+if(!privateUser)return;
+
+let name=privateUser.name;
+
+users=users.filter(u=>u.name!==name);
+
+alert(name+' has been blocked on this demo.');
+
+closePrivateChat();
+
+renderUsers();
+
+}
+
+
+function reportUser(){
+
+if(!privateUser)return;
+
+alert('Report submitted for '+privateUser.name+' on this demo.');
+
+menu.style.display='none';
+
+}
+
+</script>
+
+</body>
+</html>
