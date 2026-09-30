@@ -110,25 +110,190 @@ input:focus,select:focus{
   margin:15px 0
 }
 
+
+/* =====================================================
+   ONLINE USERS SCROLL AREA
+   ===================================================== */
+
 .users{
   display:flex;
-  flex-wrap:wrap;
+  flex-direction:column;
   gap:8px;
-  margin-bottom:15px
+  margin-bottom:15px;
+
+  max-height:260px;
+  overflow-y:auto;
+
+  padding:8px;
+
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
 }
 
+
+/* Scrollbar */
+
+.users::-webkit-scrollbar{
+  width:7px;
+}
+
+.users::-webkit-scrollbar-track{
+  background:#f1f5f9;
+  border-radius:10px;
+}
+
+.users::-webkit-scrollbar-thumb{
+  background:#cbd5e1;
+  border-radius:10px;
+}
+
+.users::-webkit-scrollbar-thumb:hover{
+  background:#94a3b8;
+}
+
+
 .user{
+  width:100%;
+
   border:1px solid #e5e7eb;
   background:#fff;
-  padding:9px 12px;
-  border-radius:999px;
+
+  padding:11px 13px;
+
+  border-radius:10px;
+
   cursor:pointer;
-  font-size:14px
+
+  font-size:14px;
+
+  text-align:left;
+
+  flex-shrink:0;
 }
 
 .user:hover{
   background:#f8fafc
 }
+
+
+/* =====================================================
+   PRIVATE MESSAGE NOTIFICATIONS
+   ===================================================== */
+
+.message-notifications{
+  display:none;
+
+  margin:10px 0 15px;
+
+  background:#eef2ff;
+
+  border:1px solid #c7d2fe;
+
+  border-radius:12px;
+
+  padding:8px;
+}
+
+
+.notification-title{
+  font-size:13px;
+
+  font-weight:700;
+
+  color:#3730a3;
+
+  padding:5px 7px 8px;
+}
+
+
+.notification-item{
+  width:100%;
+
+  border:1px solid #dbeafe;
+
+  background:white;
+
+  border-radius:10px;
+
+  padding:10px;
+
+  margin-bottom:6px;
+
+  cursor:pointer;
+
+  text-align:left;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:9px;
+}
+
+
+.notification-item:last-child{
+  margin-bottom:0;
+}
+
+
+.notification-item:hover{
+  background:#f8fafc;
+}
+
+
+.notification-icon{
+  font-size:20px;
+}
+
+
+.notification-text{
+  flex:1;
+
+  font-size:13px;
+}
+
+
+.notification-text strong{
+  display:block;
+
+  color:#111827;
+
+  margin-bottom:2px;
+}
+
+
+.notification-text span{
+  color:#6b7280;
+
+  font-size:12px;
+}
+
+
+.notification-badge{
+  display:inline-flex;
+
+  align-items:center;
+  justify-content:center;
+
+  min-width:22px;
+  height:22px;
+
+  padding:0 6px;
+
+  border-radius:999px;
+
+  background:#ef4444;
+
+  color:white;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  margin-left:5px;
+}
+
 
 .messages,.private-messages{
   height:330px;
@@ -292,6 +457,7 @@ input:focus,select:focus{
   color:#dc2626
 }
 
+
 /* NEW MESSAGE INDICATOR */
 
 .private-new{
@@ -303,6 +469,7 @@ input:focus,select:focus{
   50%{background:#dbeafe}
   100%{background:#fff}
 }
+
 
 @media(max-width:600px){
 
@@ -327,6 +494,11 @@ input:focus,select:focus{
     width:38px;
     height:36px
   }
+
+  .users{
+    max-height:230px;
+  }
+
 }
 </style>
 </head>
@@ -406,9 +578,20 @@ Enter WorldChat
 
 <div id="globalArea">
 
-<h2>Global Chat 💬</h2>
+<h2>
+Global Chat 💬
+</h2>
 
 <p id="info" class="sub"></p>
+
+
+<!-- PRIVATE MESSAGE NOTIFICATIONS -->
+
+<div
+id="messageNotifications"
+class="message-notifications">
+</div>
+
 
 <div class="toolbar">
 
@@ -419,7 +602,11 @@ oninput="renderUsers()">
 
 </div>
 
+
+<!-- ONLINE USERS -->
+
 <div id="users" class="users"></div>
+
 
 <div id="messages" class="messages"></div>
 
@@ -547,14 +734,28 @@ const db=firebase.firestore();
 let firebaseUid=null;
 let me=null;
 let privateUser=null;
+
 let privateUnsub=null;
 let globalUnsub=null;
 let usersUnsub=null;
+let privateChatsUnsub=null;
+
 let heartbeatTimer=null;
 
 let blocked=new Set();
 
 let users=[];
+
+
+/* =====================================================
+   PRIVATE NOTIFICATIONS
+   ===================================================== */
+
+let notifications=[];
+
+let notificationMessageIds=new Set();
+
+let initialPrivateChatsLoaded=false;
 
 
 /* =====================================================
@@ -564,11 +765,6 @@ let users=[];
 let audioContext=null;
 let soundEnabled=false;
 
-
-/*
-  Create the audio system after the user interacts
-  with the website.
-*/
 
 function enableNotificationSound(){
 
@@ -602,16 +798,15 @@ function enableNotificationSound(){
 
   }catch(error){
 
-    console.error("Audio initialization error:",error);
+    console.error(
+      "Audio initialization error:",
+      error
+    );
 
   }
 
 }
 
-
-/*
-  Notification sound
-*/
 
 function playMessageSound(){
 
@@ -693,11 +888,6 @@ function playMessageSound(){
 }
 
 
-/*
-  Enable audio when the user first interacts
-  with the page.
-*/
-
 document.addEventListener(
   "click",
   function(){
@@ -707,6 +897,7 @@ document.addEventListener(
   },
   {passive:true}
 );
+
 
 document.addEventListener(
   "touchstart",
@@ -870,10 +1061,6 @@ document.getElementById("status").innerHTML=
 
 async function enterChat(){
 
-/*
-  User clicked the button, so enable audio here.
-*/
-
 enableNotificationSound();
 
 
@@ -972,6 +1159,14 @@ document.getElementById("status").textContent=
 listenUsers();
 
 listenGlobalMessages();
+
+/*
+  NEW:
+  Listen for private messages even when
+  the user is in Global Chat.
+*/
+
+listenPrivateChatNotifications();
 
 startHeartbeat();
 
@@ -1497,6 +1692,345 @@ return[a,b].sort().join("_");
 
 
 /* =====================================================
+   PRIVATE CHAT NOTIFICATION LISTENER
+   ===================================================== */
+
+function listenPrivateChatNotifications(){
+
+if(privateChatsUnsub){
+
+privateChatsUnsub();
+
+privateChatsUnsub=null;
+
+}
+
+
+if(!firebaseUid)return;
+
+
+privateChatsUnsub=
+db.collection("privateChats")
+.where(
+"participants",
+"array-contains",
+firebaseUid
+)
+.onSnapshot(snapshot=>{
+
+
+/*
+  First snapshot contains old chats.
+  We remember them without showing notifications.
+*/
+
+if(!initialPrivateChatsLoaded){
+
+snapshot.forEach(doc=>{
+
+const data=doc.data();
+
+if(data.lastMessageId){
+
+notificationMessageIds.add(
+data.lastMessageId
+);
+
+}
+
+});
+
+
+initialPrivateChatsLoaded=true;
+
+return;
+
+}
+
+
+/*
+  Check changed private chats.
+*/
+
+snapshot.docChanges().forEach(change=>{
+
+if(
+change.type!=="added" &&
+change.type!=="modified"
+){
+
+return;
+
+}
+
+
+const data=
+change.doc.data();
+
+
+const lastMessageId=
+data.lastMessageId;
+
+
+const senderUid=
+data.lastMessageSenderUid;
+
+
+/*
+  No message information yet.
+*/
+
+if(!lastMessageId)return;
+
+
+/*
+  Already processed.
+*/
+
+if(
+notificationMessageIds.has(
+lastMessageId
+)
+){
+
+return;
+
+}
+
+
+notificationMessageIds.add(
+lastMessageId
+);
+
+
+/*
+  Ignore our own messages.
+*/
+
+if(senderUid===firebaseUid){
+
+return;
+
+}
+
+
+/*
+  If this private chat is currently open,
+  the private chat listener handles the sound.
+*/
+
+if(
+privateUser &&
+privateUser.uid===senderUid
+){
+
+return;
+
+}
+
+
+/*
+  Create notification.
+*/
+
+const notification={
+
+chatId:change.doc.id,
+
+messageId:lastMessageId,
+
+uid:senderUid,
+
+name:data.lastMessageSenderName||"User",
+
+country:data.lastMessageSenderCountry||"LK",
+
+language:data.lastMessageSenderLanguage||"English",
+
+text:data.lastMessage||"New private message"
+
+};
+
+
+notifications.push(notification);
+
+
+/*
+  Show notification.
+*/
+
+renderNotifications();
+
+
+/*
+  Play sound.
+*/
+
+playMessageSound();
+
+
+});
+
+},error=>{
+
+console.error(
+"Private notifications:",
+error
+);
+
+});
+
+}
+
+
+/* =====================================================
+   RENDER PRIVATE NOTIFICATIONS
+   ===================================================== */
+
+function renderNotifications(){
+
+const box=
+document.getElementById(
+"messageNotifications"
+);
+
+box.innerHTML="";
+
+
+if(notifications.length===0){
+
+box.style.display="none";
+
+return;
+
+}
+
+
+box.style.display="block";
+
+
+const title=
+document.createElement("div");
+
+title.className=
+"notification-title";
+
+
+title.innerHTML=
+"🔔 New Private Messages "+
+"<span class='notification-badge'>"+
+notifications.length+
+"</span>";
+
+
+box.appendChild(title);
+
+
+/*
+  Show newest first.
+*/
+
+[...notifications]
+.reverse()
+.forEach(n=>{
+
+
+const item=
+document.createElement("button");
+
+item.className=
+"notification-item";
+
+
+const icon=
+document.createElement("div");
+
+icon.className=
+"notification-icon";
+
+icon.textContent="💬";
+
+
+const text=
+document.createElement("div");
+
+text.className=
+"notification-text";
+
+
+const strong=
+document.createElement("strong");
+
+const c=
+getCountry(n.country);
+
+
+strong.textContent=
+c[1]+" "+n.name;
+
+
+const span=
+document.createElement("span");
+
+span.textContent=
+n.text.length>60
+?n.text.substring(0,60)+"..."
+:n.text;
+
+
+text.appendChild(strong);
+
+text.appendChild(span);
+
+
+item.appendChild(icon);
+
+item.appendChild(text);
+
+
+item.onclick=()=>{
+
+openPrivateChat({
+
+uid:n.uid,
+
+name:n.name,
+
+country:n.country,
+
+language:n.language||"English",
+
+gender:""
+
+});
+
+};
+
+
+box.appendChild(item);
+
+});
+
+}
+
+
+/* =====================================================
+   CLEAR NOTIFICATIONS FOR USER
+   ===================================================== */
+
+function clearNotificationsForUser(uid){
+
+notifications=
+notifications.filter(
+n=>n.uid!==uid
+);
+
+renderNotifications();
+
+}
+
+
+/* =====================================================
    OPEN PRIVATE CHAT
    ===================================================== */
 
@@ -1516,6 +2050,14 @@ alert(
 return;
 
 }
+
+
+/*
+  Clear notification when opening
+  this person's chat.
+*/
+
+clearNotificationsForUser(u.uid);
 
 
 privateUser=u;
@@ -1542,7 +2084,7 @@ escapeHtml(u.name)+
 "<small>"+
 escapeHtml(c[2])+
 " • "+
-escapeHtml(u.language)+
+escapeHtml(u.language||"English")+
 "</small>";
 
 
@@ -1593,11 +2135,6 @@ firebase.firestore.FieldValue.serverTimestamp()
 },{merge:true});
 
 
-/*
-  This prevents old messages from playing
-  a notification sound when the chat is first opened.
-*/
-
 let firstLoad=true;
 
 
@@ -1625,11 +2162,6 @@ change=>{
 const m=
 change.doc.data();
 
-
-/*
-  Only play sound for a NEW message
-  sent by the other person.
-*/
 
 if(
 !firstLoad &&
@@ -1675,10 +2207,6 @@ box.scrollTop=
 box.scrollHeight;
 
 
-/*
-  PLAY NOTIFICATION SOUND
-*/
-
 if(
 !firstLoad &&
 newIncomingMessage
@@ -1687,21 +2215,11 @@ newIncomingMessage
 playMessageSound();
 
 
-/*
-  Small visual notification
-*/
-
 box.classList.remove(
 "private-new"
 );
 
-
-/*
-  Force browser to restart animation
-*/
-
 void box.offsetWidth;
-
 
 box.classList.add(
 "private-new"
@@ -1709,10 +2227,6 @@ box.classList.add(
 
 }
 
-
-/*
-  Initial messages are now loaded.
-*/
 
 firstLoad=false;
 
@@ -1785,11 +2299,22 @@ firebase.firestore.FieldValue.serverTimestamp()
 },{merge:true});
 
 
+/*
+  First create the message.
+*/
+
+const messageRef=
 await chatRef
 .collection("messages")
 .add({
 
 uid:firebaseUid,
+
+name:me.name,
+
+country:me.country,
+
+language:me.language,
 
 text:text,
 
@@ -1797,6 +2322,40 @@ createdAt:
 firebase.firestore.FieldValue.serverTimestamp()
 
 });
+
+
+/*
+  Then update the chat document.
+  This allows the other user to receive
+  a notification even while in Global Chat.
+*/
+
+await chatRef.set({
+
+participants:[
+firebaseUid,
+privateUser.uid
+],
+
+lastMessage:text,
+
+lastMessageId:messageRef.id,
+
+lastMessageSenderUid:firebaseUid,
+
+lastMessageSenderName:me.name,
+
+lastMessageSenderCountry:me.country,
+
+lastMessageSenderLanguage:me.language,
+
+lastMessageAt:
+firebase.firestore.FieldValue.serverTimestamp(),
+
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+},{merge:true});
 
 
 input.value="";
@@ -1812,6 +2371,12 @@ alert(
 );
 
 }
+
+
+/*
+  Refresh the notification listener's knowledge
+  of our own sent message.
+*/
 
 }
 
