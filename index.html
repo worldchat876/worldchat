@@ -204,8 +204,6 @@ input:focus,select:focus{
   margin-top:3px
 }
 
-/* AD ICONS */
-
 .ad-icons{
   display:flex;
   gap:7px;
@@ -292,6 +290,18 @@ input:focus,select:focus{
 
 .error{
   color:#dc2626
+}
+
+/* NEW MESSAGE INDICATOR */
+
+.private-new{
+  animation:newMessagePulse .7s ease;
+}
+
+@keyframes newMessagePulse{
+  0%{background:#eef2ff}
+  50%{background:#dbeafe}
+  100%{background:#fff}
 }
 
 @media(max-width:600px){
@@ -547,6 +557,172 @@ let blocked=new Set();
 let users=[];
 
 
+/* =====================================================
+   NOTIFICATION SOUND SYSTEM
+   ===================================================== */
+
+let audioContext=null;
+let soundEnabled=false;
+
+
+/*
+  Create the audio system after the user interacts
+  with the website.
+*/
+
+function enableNotificationSound(){
+
+  try{
+
+    if(!audioContext){
+
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      if(!AudioContext){
+
+        console.log("Web Audio API not supported.");
+
+        return;
+
+      }
+
+      audioContext=new AudioContext();
+
+    }
+
+    if(audioContext.state==="suspended"){
+
+      audioContext.resume();
+
+    }
+
+    soundEnabled=true;
+
+  }catch(error){
+
+    console.error("Audio initialization error:",error);
+
+  }
+
+}
+
+
+/*
+  Notification sound
+*/
+
+function playMessageSound(){
+
+  if(!soundEnabled){
+
+    return;
+
+  }
+
+  try{
+
+    if(!audioContext){
+
+      enableNotificationSound();
+
+    }
+
+    if(!audioContext){
+
+      return;
+
+    }
+
+    const now=audioContext.currentTime;
+
+    const oscillator=
+      audioContext.createOscillator();
+
+    const gain=
+      audioContext.createGain();
+
+
+    oscillator.type="sine";
+
+    oscillator.frequency.setValueAtTime(
+      880,
+      now
+    );
+
+    oscillator.frequency.setValueAtTime(
+      1175,
+      now+0.10
+    );
+
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      now
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.25,
+      now+0.02
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      now+0.35
+    );
+
+
+    oscillator.connect(gain);
+
+    gain.connect(audioContext.destination);
+
+    oscillator.start(now);
+
+    oscillator.stop(now+0.35);
+
+  }catch(error){
+
+    console.error(
+      "Notification sound error:",
+      error
+    );
+
+  }
+
+}
+
+
+/*
+  Enable audio when the user first interacts
+  with the page.
+*/
+
+document.addEventListener(
+  "click",
+  function(){
+
+    enableNotificationSound();
+
+  },
+  {passive:true}
+);
+
+document.addEventListener(
+  "touchstart",
+  function(){
+
+    enableNotificationSound();
+
+  },
+  {passive:true}
+);
+
+
+/* =====================================================
+   COUNTRIES
+   ===================================================== */
+
 const countries=[
 
 ["LK","🇱🇰","Sri Lanka"],
@@ -617,7 +793,9 @@ o.value=c[0];
 
 o.textContent=c[1]+" "+c[2];
 
-document.getElementById("country").appendChild(o);
+document
+.getElementById("country")
+.appendChild(o);
 
 });
 
@@ -630,7 +808,9 @@ o.value=l;
 
 o.textContent=l;
 
-document.getElementById("language").appendChild(o);
+document
+.getElementById("language")
+.appendChild(o);
 
 });
 
@@ -643,7 +823,9 @@ o.value=i;
 
 o.textContent=i;
 
-document.getElementById("age").appendChild(o);
+document
+.getElementById("age")
+.appendChild(o);
 
 }
 
@@ -659,6 +841,10 @@ return countries.find(c=>c[0]===code)||countries[0];
 
 }
 
+
+/* =====================================================
+   FIREBASE AUTH
+   ===================================================== */
 
 const authReady=auth.signInAnonymously()
 
@@ -678,17 +864,39 @@ document.getElementById("status").innerHTML=
 });
 
 
+/* =====================================================
+   ENTER CHAT
+   ===================================================== */
+
 async function enterChat(){
 
-const name=document.getElementById("username").value.trim();
+/*
+  User clicked the button, so enable audio here.
+*/
 
-const country=document.getElementById("country").value;
+enableNotificationSound();
 
-const language=document.getElementById("language").value;
 
-const gender=document.getElementById("gender").value;
+const name=
+document.getElementById("username")
+.value
+.trim();
 
-const age=document.getElementById("age").value;
+const country=
+document.getElementById("country")
+.value;
+
+const language=
+document.getElementById("language")
+.value;
+
+const gender=
+document.getElementById("gender")
+.value;
+
+const age=
+document.getElementById("age")
+.value;
 
 
 if(!name){
@@ -744,7 +952,9 @@ await authReady;
 
 if(!firebaseUid){
 
-throw new Error("Firebase authentication failed");
+throw new Error(
+"Firebase authentication failed"
+);
 
 }
 
@@ -779,7 +989,9 @@ document.getElementById("status").innerHTML=
 }
 
 
-/* ONLINE STATUS */
+/* =====================================================
+   ONLINE STATUS
+   ===================================================== */
 
 async function setUserOnline(){
 
@@ -803,16 +1015,20 @@ ageBand:getAgeBand(me.age),
 
 online:true,
 
-lastSeen:firebase.firestore.FieldValue.serverTimestamp(),
+lastSeen:
+firebase.firestore.FieldValue.serverTimestamp(),
 
-updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
 
 },{merge:true});
 
 }
 
 
-/* HEARTBEAT */
+/* =====================================================
+   HEARTBEAT
+   ===================================================== */
 
 function startHeartbeat(){
 
@@ -825,7 +1041,12 @@ clearInterval(heartbeatTimer);
 heartbeatTimer=setInterval(()=>{
 
 setUserOnline().catch(error=>{
-console.error("Heartbeat:",error);
+
+console.error(
+"Heartbeat:",
+error
+);
+
 });
 
 },20000);
@@ -833,7 +1054,9 @@ console.error("Heartbeat:",error);
 }
 
 
-/* OFFLINE */
+/* =====================================================
+   OFFLINE
+   ===================================================== */
 
 async function setUserOffline(){
 
@@ -847,22 +1070,30 @@ await db.collection("users")
 
 online:false,
 
-lastSeen:firebase.firestore.FieldValue.serverTimestamp()
+lastSeen:
+firebase.firestore.FieldValue.serverTimestamp()
 
 },{merge:true});
 
 }catch(error){
 
-console.error("Offline status:",error);
+console.error(
+"Offline status:",
+error
+);
 
 }
 
 }
 
 
-/* WHEN TAB IS HIDDEN */
+/* =====================================================
+   TAB VISIBILITY
+   ===================================================== */
 
-document.addEventListener("visibilitychange",()=>{
+document.addEventListener(
+"visibilitychange",
+()=>{
 
 if(document.visibilityState==="visible"){
 
@@ -873,9 +1104,13 @@ setUserOnline().catch(()=>{});
 });
 
 
-/* PAGE CLOSE */
+/* =====================================================
+   PAGE CLOSE
+   ===================================================== */
 
-window.addEventListener("beforeunload",()=>{
+window.addEventListener(
+"beforeunload",
+()=>{
 
 if(firebaseUid){
 
@@ -885,7 +1120,8 @@ db.collection("users")
 
 online:false,
 
-lastSeen:firebase.firestore.FieldValue.serverTimestamp()
+lastSeen:
+firebase.firestore.FieldValue.serverTimestamp()
 
 },{merge:true});
 
@@ -893,6 +1129,10 @@ lastSeen:firebase.firestore.FieldValue.serverTimestamp()
 
 });
 
+
+/* =====================================================
+   AGE
+   ===================================================== */
 
 function getAgeBand(age){
 
@@ -913,7 +1153,9 @@ return "65+";
 }
 
 
-/* USERS */
+/* =====================================================
+   USERS
+   ===================================================== */
 
 function listenUsers(){
 
@@ -939,17 +1181,15 @@ if(u.uid!==firebaseUid){
 let isOnline=false;
 
 
-/*
-Only show users who have:
-online = true
-AND recent heartbeat
-*/
-
 if(u.online===true){
 
-if(u.lastSeen&&u.lastSeen.toMillis){
+if(
+u.lastSeen &&
+u.lastSeen.toMillis
+){
 
-const last=u.lastSeen.toMillis();
+const last=
+u.lastSeen.toMillis();
 
 if(now-last<60000){
 
@@ -1012,21 +1252,28 @@ renderUsers();
 
 },error=>{
 
-console.error("Users error:",error);
+console.error(
+"Users error:",
+error
+);
 
 });
 
 }
 
 
-/* USER LIST */
+/* =====================================================
+   USER LIST
+   ===================================================== */
 
 function renderUsers(){
 
-const box=document.getElementById("users");
+const box=
+document.getElementById("users");
 
 const search=
-document.getElementById("search").value
+document.getElementById("search")
+.value
 .trim()
 .toLowerCase();
 
@@ -1048,7 +1295,9 @@ c[2]+" "+
 u.language+" "+
 u.gender;
 
-return text.toLowerCase().includes(search);
+return text
+.toLowerCase()
+.includes(search);
 
 })
 
@@ -1056,7 +1305,8 @@ return text.toLowerCase().includes(search);
 
 const c=getCountry(u.country);
 
-const div=document.createElement("div");
+const div=
+document.createElement("div");
 
 div.className="user";
 
@@ -1084,7 +1334,9 @@ box.appendChild(div);
 }
 
 
-/* GLOBAL CHAT */
+/* =====================================================
+   GLOBAL CHAT
+   ===================================================== */
 
 function listenGlobalMessages(){
 
@@ -1097,7 +1349,8 @@ db.collection("globalMessages")
 .limitToLast(100)
 .onSnapshot(snapshot=>{
 
-const box=document.getElementById("messages");
+const box=
+document.getElementById("messages");
 
 box.innerHTML="";
 
@@ -1109,11 +1362,15 @@ addGlobalMessage(doc.data());
 });
 
 
-box.scrollTop=box.scrollHeight;
+box.scrollTop=
+box.scrollHeight;
 
 },error=>{
 
-console.error("Global chat:",error);
+console.error(
+"Global chat:",
+error
+);
 
 });
 
@@ -1122,9 +1379,11 @@ console.error("Global chat:",error);
 
 function addGlobalMessage(m){
 
-const box=document.getElementById("messages");
+const box=
+document.getElementById("messages");
 
-const div=document.createElement("div");
+const div=
+document.createElement("div");
 
 div.className="msg";
 
@@ -1136,18 +1395,22 @@ div.classList.add("mine");
 }
 
 
-const c=getCountry(m.country||"LK");
+const c=
+getCountry(m.country||"LK");
 
 
-const small=document.createElement("small");
+const small=
+document.createElement("small");
 
 small.textContent=
 c[1]+" "+(m.name||"User");
 
 
-const text=document.createElement("div");
+const text=
+document.createElement("div");
 
-text.textContent=m.text||"";
+text.textContent=
+m.text||"";
 
 
 div.appendChild(small);
@@ -1159,11 +1422,17 @@ box.appendChild(div);
 }
 
 
+/* =====================================================
+   SEND GLOBAL MESSAGE
+   ===================================================== */
+
 async function sendMessage(){
 
-const input=document.getElementById("message");
+const input=
+document.getElementById("message");
 
-const text=input.value.trim();
+const text=
+input.value.trim();
 
 
 if(!text)return;
@@ -1171,7 +1440,9 @@ if(!text)return;
 
 if(!firebaseUid){
 
-alert("Please wait for Firebase connection.");
+alert(
+"Please wait for Firebase connection."
+);
 
 return;
 
@@ -1180,7 +1451,8 @@ return;
 
 try{
 
-await db.collection("globalMessages").add({
+await db.collection("globalMessages")
+.add({
 
 uid:firebaseUid,
 
@@ -1204,14 +1476,18 @@ catch(error){
 
 console.error(error);
 
-alert("Message could not be sent.");
+alert(
+"Message could not be sent."
+);
 
 }
 
 }
 
 
-/* PRIVATE CHAT */
+/* =====================================================
+   PRIVATE CHAT ID
+   ===================================================== */
 
 function chatId(a,b){
 
@@ -1219,6 +1495,10 @@ return[a,b].sort().join("_");
 
 }
 
+
+/* =====================================================
+   OPEN PRIVATE CHAT
+   ===================================================== */
 
 function openPrivateChat(u){
 
@@ -1229,7 +1509,9 @@ if(blocked.has(u.name))return;
 
 if(!u.uid){
 
-alert("This user is not connected to Firebase.");
+alert(
+"This user is not connected to Firebase."
+);
 
 return;
 
@@ -1239,22 +1521,34 @@ return;
 privateUser=u;
 
 
-document.getElementById("globalArea").style.display="none";
+document.getElementById(
+"globalArea"
+).style.display="none";
 
-document.getElementById("privateChat").style.display="block";
+document.getElementById(
+"privateChat"
+).style.display="block";
 
 
-const c=getCountry(u.country);
+const c=
+getCountry(u.country);
 
 
-document.getElementById("privateUser").innerHTML=
-c[1]+" "+escapeHtml(u.name)+
-"<small>"+escapeHtml(c[2])+
-" • "+escapeHtml(u.language)+
+document.getElementById(
+"privateUser"
+).innerHTML=
+c[1]+" "+
+escapeHtml(u.name)+
+"<small>"+
+escapeHtml(c[2])+
+" • "+
+escapeHtml(u.language)+
 "</small>";
 
 
-document.getElementById("menu").style.display="none";
+document.getElementById(
+"menu"
+).style.display="none";
 
 
 listenPrivateMessages(u);
@@ -1262,26 +1556,49 @@ listenPrivateMessages(u);
 }
 
 
+/* =====================================================
+   PRIVATE MESSAGE LISTENER
+   ===================================================== */
+
 function listenPrivateMessages(u){
 
-if(privateUnsub)privateUnsub();
+if(privateUnsub){
+
+privateUnsub();
+
+privateUnsub=null;
+
+}
 
 
-const id=chatId(firebaseUid,u.uid);
+const id=
+chatId(firebaseUid,u.uid);
 
 
 const chatRef=
-db.collection("privateChats").doc(id);
+db.collection("privateChats")
+.doc(id);
 
 
 chatRef.set({
 
-participants:[firebaseUid,u.uid],
+participants:[
+firebaseUid,
+u.uid
+],
 
 updatedAt:
 firebase.firestore.FieldValue.serverTimestamp()
 
 },{merge:true});
+
+
+/*
+  This prevents old messages from playing
+  a notification sound when the chat is first opened.
+*/
+
+let firstLoad=true;
 
 
 privateUnsub=
@@ -1291,16 +1608,49 @@ chatRef
 .limitToLast(100)
 .onSnapshot(snapshot=>{
 
-const box=document.getElementById("privateMessages");
+const box=
+document.getElementById(
+"privateMessages"
+);
 
 box.innerHTML="";
 
 
+let newIncomingMessage=false;
+
+
+snapshot.docChanges().forEach(
+change=>{
+
+const m=
+change.doc.data();
+
+
+/*
+  Only play sound for a NEW message
+  sent by the other person.
+*/
+
+if(
+!firstLoad &&
+change.type==="added" &&
+m.uid!==firebaseUid
+){
+
+newIncomingMessage=true;
+
+}
+
+});
+
+
 snapshot.forEach(doc=>{
 
-const m=doc.data();
+const m=
+doc.data();
 
-const div=document.createElement("div");
+const div=
+document.createElement("div");
 
 div.className="pmsg";
 
@@ -1312,29 +1662,86 @@ div.classList.add("mine");
 }
 
 
-div.textContent=m.text||"";
+div.textContent=
+m.text||"";
+
 
 box.appendChild(div);
 
 });
 
 
-box.scrollTop=box.scrollHeight;
+box.scrollTop=
+box.scrollHeight;
+
+
+/*
+  PLAY NOTIFICATION SOUND
+*/
+
+if(
+!firstLoad &&
+newIncomingMessage
+){
+
+playMessageSound();
+
+
+/*
+  Small visual notification
+*/
+
+box.classList.remove(
+"private-new"
+);
+
+
+/*
+  Force browser to restart animation
+*/
+
+void box.offsetWidth;
+
+
+box.classList.add(
+"private-new"
+);
+
+}
+
+
+/*
+  Initial messages are now loaded.
+*/
+
+firstLoad=false;
+
 
 },error=>{
 
-console.error("Private chat:",error);
+console.error(
+"Private chat:",
+error
+);
 
 });
 
 }
 
 
+/* =====================================================
+   SEND PRIVATE MESSAGE
+   ===================================================== */
+
 async function sendPrivateMessage(){
 
-const input=document.getElementById("privateMessage");
+const input=
+document.getElementById(
+"privateMessage"
+);
 
-const text=input.value.trim();
+const text=
+input.value.trim();
 
 
 if(!text||!privateUser)return;
@@ -1342,7 +1749,9 @@ if(!text||!privateUser)return;
 
 if(!firebaseUid){
 
-alert("Firebase is not connected.");
+alert(
+"Firebase is not connected."
+);
 
 return;
 
@@ -1351,16 +1760,24 @@ return;
 
 try{
 
-const id=chatId(firebaseUid,privateUser.uid);
+const id=
+chatId(
+firebaseUid,
+privateUser.uid
+);
 
 
 const chatRef=
-db.collection("privateChats").doc(id);
+db.collection("privateChats")
+.doc(id);
 
 
 await chatRef.set({
 
-participants:[firebaseUid,privateUser.uid],
+participants:[
+firebaseUid,
+privateUser.uid
+],
 
 updatedAt:
 firebase.firestore.FieldValue.serverTimestamp()
@@ -1390,12 +1807,18 @@ catch(error){
 
 console.error(error);
 
-alert("Private message could not be sent.");
+alert(
+"Private message could not be sent."
+);
 
 }
 
 }
 
+
+/* =====================================================
+   CLOSE PRIVATE CHAT
+   ===================================================== */
 
 function closePrivateChat(){
 
@@ -1411,18 +1834,29 @@ privateUnsub=null;
 privateUser=null;
 
 
-document.getElementById("privateChat").style.display="none";
+document.getElementById(
+"privateChat"
+).style.display="none";
 
-document.getElementById("globalArea").style.display="block";
+document.getElementById(
+"globalArea"
+).style.display="block";
 
-document.getElementById("menu").style.display="none";
+document.getElementById(
+"menu"
+).style.display="none";
 
 }
 
 
+/* =====================================================
+   MENU
+   ===================================================== */
+
 function toggleMenu(){
 
-const menu=document.getElementById("menu");
+const menu=
+document.getElementById("menu");
 
 menu.style.display=
 menu.style.display==="block"
@@ -1432,35 +1866,52 @@ menu.style.display==="block"
 }
 
 
+/* =====================================================
+   VIEW PROFILE
+   ===================================================== */
+
 function viewProfile(){
 
 if(!privateUser)return;
 
 
-const c=getCountry(privateUser.country);
+const c=
+getCountry(privateUser.country);
 
 
 alert(
 
-"Username: "+privateUser.name+
-"\nCountry: "+c[1]+" "+c[2]+
-"\nLanguage: "+privateUser.language+
-"\nGender: "+privateUser.gender
+"Username: "+
+privateUser.name+
+"\nCountry: "+
+c[1]+" "+c[2]+
+"\nLanguage: "+
+privateUser.language+
+"\nGender: "+
+privateUser.gender
 
 );
 
 
-document.getElementById("menu").style.display="none";
+document.getElementById(
+"menu"
+).style.display="none";
 
 }
 
+
+/* =====================================================
+   BLOCK USER
+   ===================================================== */
 
 function blockUser(){
 
 if(!privateUser)return;
 
 
-blocked.add(privateUser.name);
+blocked.add(
+privateUser.name
+);
 
 
 alert(
@@ -1476,6 +1927,10 @@ renderUsers();
 }
 
 
+/* =====================================================
+   REPORT USER
+   ===================================================== */
+
 async function reportUser(){
 
 if(!privateUser)return;
@@ -1483,13 +1938,17 @@ if(!privateUser)return;
 
 try{
 
-await db.collection("reports").add({
+await db.collection("reports")
+.add({
 
-reporterUid:firebaseUid,
+reporterUid:
+firebaseUid,
 
-reportedUid:privateUser.uid,
+reportedUid:
+privateUser.uid,
 
-reportedName:privateUser.name,
+reportedName:
+privateUser.name,
 
 createdAt:
 firebase.firestore.FieldValue.serverTimestamp()
@@ -1497,7 +1956,9 @@ firebase.firestore.FieldValue.serverTimestamp()
 });
 
 
-alert("Report submitted.");
+alert(
+"Report submitted."
+);
 
 }
 
@@ -1505,17 +1966,23 @@ catch(error){
 
 console.error(error);
 
-alert("Report could not be submitted.");
+alert(
+"Report could not be submitted."
+);
 
 }
 
 
-document.getElementById("menu").style.display="none";
+document.getElementById(
+"menu"
+).style.display="none";
 
 }
 
 
-/* AD DIRECT LINK */
+/* =====================================================
+   ADS
+   ===================================================== */
 
 function openAd(){
 
@@ -1528,9 +1995,14 @@ window.open(
 }
 
 
+/* =====================================================
+   HTML ESCAPE
+   ===================================================== */
+
 function escapeHtml(text){
 
-const div=document.createElement("div");
+const div=
+document.createElement("div");
 
 div.textContent=text;
 
