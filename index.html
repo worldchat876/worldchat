@@ -31,7 +31,6 @@ label{display:block;font-weight:bold;margin:14px 0 7px}
 .meta{font-size:12px;font-weight:bold;margin-bottom:4px}
 .send{display:flex;gap:10px;margin-top:12px}
 .send input{flex:1}
-
 .private{display:none}
 .private-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid #e2e7ef;position:relative}
 .back{border:0;background:#f1f5f9;border-radius:10px;padding:9px 12px;cursor:pointer;font-size:18px}
@@ -46,7 +45,6 @@ label{display:block;font-weight:bold;margin:14px 0 7px}
 .ptext{max-width:78%;padding:9px 12px;border-radius:14px;background:#fff;border:1px solid #e1e6ee}
 .pmsg.mine .ptext{background:#eaf2ff}
 .start-note{text-align:center;color:#667085;font-size:13px;padding:25px}
-
 @media(max-width:650px){
 .grid{grid-template-columns:1fr}
 .send .btn{padding:12px}
@@ -102,7 +100,7 @@ label{display:block;font-weight:bold;margin:14px 0 7px}
 </div>
 
 <div class="note">
-This front-end demo stores nothing online. For a public chat service, this version accepts adults (18+) only.
+This version is for adults 18+ only. Do not share personal contact details.
 </div>
 
 <button class="btn full" onclick="enterChat()">Enter WorldChat</button>
@@ -113,12 +111,15 @@ This front-end demo stores nothing online. For a public chat service, this versi
 <section id="chat" class="card">
 
 <h2>Global Chat 💬</h2>
+
 <p id="info" class="sub"></p>
 
 <div id="globalArea">
 
 <div class="toolbar">
-<input id="search" placeholder="Search username, country, language or gender..." oninput="renderUsers()">
+<input id="search"
+placeholder="Search username, country, language or gender..."
+oninput="renderUsers()">
 </div>
 
 <div id="users" class="users"></div>
@@ -126,7 +127,11 @@ This front-end demo stores nothing online. For a public chat service, this versi
 <div id="messages" class="messages"></div>
 
 <div class="send">
-<input id="message" maxlength="300" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendMessage()">
+<input id="message"
+maxlength="300"
+placeholder="Write a message..."
+onkeydown="if(event.key==='Enter')sendMessage()">
+
 <button class="btn" onclick="sendMessage()">Send</button>
 </div>
 
@@ -144,8 +149,11 @@ This front-end demo stores nothing online. For a public chat service, this versi
 <button class="dots" onclick="toggleMenu()">⋮</button>
 
 <div id="menu" class="menu">
+
 <button onclick="blockUser()">🚫 Block</button>
+
 <button onclick="reportUser()">⚠️ Report</button>
+
 </div>
 
 </div>
@@ -154,7 +162,10 @@ This front-end demo stores nothing online. For a public chat service, this versi
 
 <div class="send">
 
-<input id="privateMessage" maxlength="300" placeholder="Write a private message..." onkeydown="if(event.key==='Enter')sendPrivateMessage()">
+<input id="privateMessage"
+maxlength="300"
+placeholder="Write a private message..."
+onkeydown="if(event.key==='Enter')sendPrivateMessage()">
 
 <button class="btn" onclick="sendPrivateMessage()">Send</button>
 
@@ -170,6 +181,7 @@ This front-end demo stores nothing online. For a public chat service, this versi
 <script>
 
 const countries=[
+
 ['LK','🇱🇰','Sri Lanka'],
 ['US','🇺🇸','United States'],
 ['GB','🇬🇧','United Kingdom'],
@@ -200,52 +212,82 @@ const countries=[
 ['MX','🇲🇽','Mexico'],
 ['TR','🇹🇷','Türkiye'],
 ['NL','🇳🇱','Netherlands']
+
 ];
 
 const languages=[
-'English','Sinhala','Tamil','Hindi','Spanish','French','German',
-'Italian','Portuguese','Arabic','Japanese','Korean','Chinese',
-'Russian','Turkish','Dutch','Malay','Thai','Bengali','Nepali'
+'English','Sinhala','Tamil','Hindi','Spanish','French',
+'German','Italian','Portuguese','Arabic','Japanese',
+'Korean','Chinese','Russian','Turkish','Dutch',
+'Malay','Thai','Bengali','Nepali'
 ];
 
+
 for(const c of countries){
+
 let o=document.createElement('option');
+
 o.value=c[0];
+
 o.textContent=c[1]+' '+c[2];
+
 country.appendChild(o);
+
 }
+
 
 for(const l of languages){
+
 let o=document.createElement('option');
+
 o.value=l;
+
 o.textContent=l;
+
 language.appendChild(o);
+
 }
 
+
 for(let i=18;i<=100;i++){
+
 let o=document.createElement('option');
+
 o.value=i;
+
 o.textContent=i;
+
 age.appendChild(o);
+
 }
 
 
 let me=null;
 
 let users=[
+
 {name:'Alex',country:'US',language:'English',gender:'Male',age:24},
+
 {name:'Maya',country:'IN',language:'Hindi',gender:'Female',age:22},
+
 {name:'Ken',country:'JP',language:'Japanese',gender:'Male',age:28},
+
 {name:'Lina',country:'DE',language:'German',gender:'Female',age:25},
+
 {name:'Arun',country:'LK',language:'Sinhala',gender:'Male',age:21}
+
 ];
 
+
 let privateUser=null;
+
 let privateChats={};
 
 
 function gc(x){
+
 return countries.find(c=>c[0]===x)||['','🌐','Unknown'];
+
 }
 
 
@@ -254,31 +296,38 @@ function enterChat(){
 let name=username.value.trim();
 
 if(!name||!country.value||!language.value||!gender.value||!age.value){
+
 alert('Please complete all profile fields.');
+
 return;
+
 }
 
 me={
+
 name,
+
 country:country.value,
+
 language:language.value,
+
 gender:gender.value,
+
 age:+age.value
+
 };
 
-users=[
-me,
-...users.filter(u=>u.name.toLowerCase()!=name.toLowerCase())
-];
+users=[me,...users.filter(u=>u.name.toLowerCase()!=name.toLowerCase())];
 
 setup.style.display='none';
+
 chat.style.display='block';
 
 let c=gc(me.country);
 
 mini.textContent=c[1]+' '+name;
 
-info.textContent=c[1]+' '+name+' • '+me.language+' • '+me.gender+' • Age '+me.age;
+info.textContent=c[1]+' '+name+' • '+me.language+' • '+me.gender;
 
 renderUsers();
 
@@ -291,29 +340,26 @@ function renderUsers(){
 
 let q=search.value.toLowerCase().trim();
 
-let usersDiv=document.getElementById('users');
+usersDiv=document.getElementById('users');
 
 usersDiv.innerHTML='';
 
-users
-.filter(u=>{
+users.filter(u=>{
 
 let c=gc(u.country);
 
-return(
-u.name+' '+c[2]+' '+u.language+' '+u.gender
-)
+return (u.name+' '+c[2]+' '+u.language+' '+u.gender)
 .toLowerCase()
 .includes(q);
 
-})
-.forEach(u=>{
+}).forEach(u=>{
 
 let c=gc(u.country);
 
 let d=document.createElement('button');
 
 d.className='user';
+
 d.type='button';
 
 d.textContent=c[1]+' '+u.name;
@@ -412,9 +458,7 @@ menu.style.display='none';
 function toggleMenu(){
 
 menu.style.display=
-menu.style.display==='block'
-?'none'
-:'block';
+menu.style.display==='block'?'none':'block';
 
 }
 
@@ -424,6 +468,8 @@ function renderPrivateMessages(){
 let box=document.getElementById('privateMessages');
 
 box.innerHTML='';
+
+if(!privateUser)return;
 
 let key=privateUser.name;
 
@@ -477,8 +523,11 @@ let key=privateUser.name;
 if(!privateChats[key])privateChats[key]=[];
 
 privateChats[key].push({
+
 text:v,
+
 mine:true
+
 });
 
 privateMessage.value='';
@@ -496,7 +545,7 @@ let name=privateUser.name;
 
 users=users.filter(u=>u.name!==name);
 
-alert(name+' has been blocked on this demo.');
+alert(name+' has been blocked.');
 
 closePrivateChat();
 
@@ -509,11 +558,300 @@ function reportUser(){
 
 if(!privateUser)return;
 
-alert('Report submitted for '+privateUser.name+' on this demo.');
+alert('Report submitted for '+privateUser.name+'.');
 
 menu.style.display='none';
 
 }
+
+</script>
+
+
+<!-- Firebase -->
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore-compat.js"></script>
+
+
+<script>
+
+const firebaseConfig={
+
+apiKey:"AIzaSyCxMbGWolalaS_RQgjqyls44Lkn9lsWFYE",
+
+authDomain:"worldchat-4fc51.firebaseapp.com",
+
+projectId:"worldchat-4fc51",
+
+storageBucket:"worldchat-4fc51.firebasestorage.app",
+
+messagingSenderId:"569064178427",
+
+appId:"1:569064178427:web:7c65020d3dec55597a265e"
+
+};
+
+
+firebase.initializeApp(firebaseConfig);
+
+const auth=firebase.auth();
+
+const db=firebase.firestore();
+
+let firebaseUid=null;
+
+
+auth.signInAnonymously()
+
+.then(r=>{
+
+firebaseUid=r.user.uid;
+
+})
+
+.catch(e=>{
+
+console.error("Firebase auth:",e);
+
+});
+
+
+const oldEnterChat=enterChat;
+
+
+enterChat=async function(){
+
+oldEnterChat();
+
+if(!me||!firebaseUid)return;
+
+try{
+
+await db.collection("users")
+.doc(firebaseUid)
+.set({
+
+uid:firebaseUid,
+
+name:me.name,
+
+country:me.country,
+
+language:me.language,
+
+gender:me.gender,
+
+age:me.age,
+
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+},{merge:true});
+
+
+listenFirebaseUsers();
+
+}catch(e){
+
+console.error("User save:",e);
+
+}
+
+};
+
+
+function listenFirebaseUsers(){
+
+db.collection("users").onSnapshot(s=>{
+
+const remote=s.docs
+
+.map(d=>d.data())
+
+.filter(u=>u.uid!==firebaseUid);
+
+
+users=[
+
+{...me,uid:firebaseUid},
+
+...remote.map(u=>({
+
+name:u.name,
+
+country:u.country,
+
+language:u.language,
+
+gender:u.gender,
+
+age:u.age,
+
+uid:u.uid
+
+}))
+
+];
+
+
+renderUsers();
+
+},
+
+e=>console.error("Users:",e));
+
+}
+
+
+const oldOpenPrivateChat=openPrivateChat;
+
+
+openPrivateChat=function(u){
+
+oldOpenPrivateChat(u);
+
+if(u&&u.name!==me.name){
+
+listenPrivateFirebase(u);
+
+}
+
+};
+
+
+let privateUnsub=null;
+
+
+function chatId(a,b){
+
+return [a,b]
+
+.sort()
+
+.join("_")
+
+.replace(/[^a-zA-Z0-9_-]/g,"_");
+
+}
+
+
+function listenPrivateFirebase(u){
+
+if(privateUnsub)privateUnsub();
+
+if(!firebaseUid)return;
+
+
+privateUnsub=
+
+db.collection("privateChats")
+
+.doc(chatId(firebaseUid,u.uid||u.name))
+
+.collection("messages")
+
+.orderBy("createdAt","asc")
+
+.onSnapshot(s=>{
+
+privateChats[u.name]=s.docs.map(d=>({
+
+text:d.data().text,
+
+mine:d.data().uid===firebaseUid
+
+}));
+
+
+renderPrivateMessages();
+
+},
+
+e=>console.error("Private chat:",e));
+
+}
+
+
+const oldSendPrivateMessage=sendPrivateMessage;
+
+
+sendPrivateMessage=async function(){
+
+const v=privateMessage.value.trim();
+
+if(!v||!privateUser||!firebaseUid)return;
+
+
+const target=users.find(
+
+x=>x.name===privateUser.name
+
+);
+
+
+if(!target||!target.uid){
+
+oldSendPrivateMessage();
+
+return;
+
+}
+
+
+try{
+
+await db.collection("privateChats")
+
+.doc(chatId(firebaseUid,target.uid))
+
+.collection("messages")
+
+.add({
+
+uid:firebaseUid,
+
+text:v,
+
+createdAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+
+privateMessage.value='';
+
+}
+
+catch(e){
+
+console.error("Send private:",e);
+
+alert("Message could not be sent. Check Firebase Firestore rules.");
+
+}
+
+};
+
+
+const oldClosePrivateChat=closePrivateChat;
+
+
+closePrivateChat=function(){
+
+if(privateUnsub){
+
+privateUnsub();
+
+privateUnsub=null;
+
+}
+
+oldClosePrivateChat();
+
+};
 
 </script>
 
