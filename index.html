@@ -29,7 +29,8 @@ body{
 
 .logo{
   font-size:21px;
-  font-weight:700
+  font-weight:700;
+  cursor:pointer;
 }
 
 .sub{
@@ -53,6 +54,10 @@ body{
 
 h1,h2{
   margin-top:0
+}
+
+h2{
+  cursor:pointer;
 }
 
 label{
@@ -131,9 +136,6 @@ input:focus,select:focus{
   border-radius:12px;
 }
 
-
-/* Scrollbar */
-
 .users::-webkit-scrollbar{
   width:7px;
 }
@@ -151,7 +153,6 @@ input:focus,select:focus{
 .users::-webkit-scrollbar-thumb:hover{
   background:#94a3b8;
 }
-
 
 .user{
   width:100%;
@@ -195,7 +196,6 @@ input:focus,select:focus{
   padding:8px;
 }
 
-
 .notification-title{
   font-size:13px;
 
@@ -205,7 +205,6 @@ input:focus,select:focus{
 
   padding:5px 7px 8px;
 }
-
 
 .notification-item{
   width:100%;
@@ -231,28 +230,23 @@ input:focus,select:focus{
   gap:9px;
 }
 
-
 .notification-item:last-child{
   margin-bottom:0;
 }
-
 
 .notification-item:hover{
   background:#f8fafc;
 }
 
-
 .notification-icon{
   font-size:20px;
 }
-
 
 .notification-text{
   flex:1;
 
   font-size:13px;
 }
-
 
 .notification-text strong{
   display:block;
@@ -262,13 +256,11 @@ input:focus,select:focus{
   margin-bottom:2px;
 }
 
-
 .notification-text span{
   color:#6b7280;
 
   font-size:12px;
 }
-
 
 .notification-badge{
   display:inline-flex;
@@ -506,8 +498,15 @@ input:focus,select:focus{
 <body>
 
 <header class="header">
-  <div class="logo">🌍 WorldChat</div>
+
+  <div
+    class="logo"
+    onclick="openDirectLink()">
+    🌍 WorldChat
+  </div>
+
   <div id="mini" class="sub"></div>
+
 </header>
 
 <main class="wrap">
@@ -578,7 +577,7 @@ Enter WorldChat
 
 <div id="globalArea">
 
-<h2>
+<h2 onclick="openDirectLink()">
 Global Chat 💬
 </h2>
 
@@ -1160,12 +1159,6 @@ listenUsers();
 
 listenGlobalMessages();
 
-/*
-  NEW:
-  Listen for private messages even when
-  the user is in Global Chat.
-*/
-
 listenPrivateChatNotifications();
 
 startHeartbeat();
@@ -1719,11 +1712,6 @@ firebaseUid
 .onSnapshot(snapshot=>{
 
 
-/*
-  First snapshot contains old chats.
-  We remember them without showing notifications.
-*/
-
 if(!initialPrivateChatsLoaded){
 
 snapshot.forEach(doc=>{
@@ -1747,10 +1735,6 @@ return;
 
 }
 
-
-/*
-  Check changed private chats.
-*/
 
 snapshot.docChanges().forEach(change=>{
 
@@ -1776,16 +1760,8 @@ const senderUid=
 data.lastMessageSenderUid;
 
 
-/*
-  No message information yet.
-*/
-
 if(!lastMessageId)return;
 
-
-/*
-  Already processed.
-*/
 
 if(
 notificationMessageIds.has(
@@ -1803,21 +1779,12 @@ lastMessageId
 );
 
 
-/*
-  Ignore our own messages.
-*/
-
 if(senderUid===firebaseUid){
 
 return;
 
 }
 
-
-/*
-  If this private chat is currently open,
-  the private chat listener handles the sound.
-*/
 
 if(
 privateUser &&
@@ -1828,10 +1795,6 @@ return;
 
 }
 
-
-/*
-  Create notification.
-*/
 
 const notification={
 
@@ -1854,20 +1817,9 @@ text:data.lastMessage||"New private message"
 
 notifications.push(notification);
 
-
-/*
-  Show notification.
-*/
-
 renderNotifications();
 
-
-/*
-  Play sound.
-*/
-
 playMessageSound();
-
 
 });
 
@@ -1926,14 +1878,9 @@ notifications.length+
 box.appendChild(title);
 
 
-/*
-  Show newest first.
-*/
-
 [...notifications]
 .reverse()
 .forEach(n=>{
-
 
 const item=
 document.createElement("button");
@@ -2051,11 +1998,6 @@ return;
 
 }
 
-
-/*
-  Clear notification when opening
-  this person's chat.
-*/
 
 clearNotificationsForUser(u.uid);
 
@@ -2299,10 +2241,6 @@ firebase.firestore.FieldValue.serverTimestamp()
 },{merge:true});
 
 
-/*
-  First create the message.
-*/
-
 const messageRef=
 await chatRef
 .collection("messages")
@@ -2323,12 +2261,6 @@ firebase.firestore.FieldValue.serverTimestamp()
 
 });
 
-
-/*
-  Then update the chat document.
-  This allows the other user to receive
-  a notification even while in Global Chat.
-*/
 
 await chatRef.set({
 
@@ -2371,12 +2303,6 @@ alert(
 );
 
 }
-
-
-/*
-  Refresh the notification listener's knowledge
-  of our own sent message.
-*/
 
 }
 
@@ -2541,6 +2467,21 @@ alert(
 document.getElementById(
 "menu"
 ).style.display="none";
+
+}
+
+
+/* =====================================================
+   DIRECT LINK
+   ===================================================== */
+
+function openDirectLink(){
+
+  window.open(
+    "https://omg10.com/4/11928842",
+    "_blank",
+    "noopener,noreferrer"
+  );
 
 }
 
