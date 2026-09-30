@@ -2,52 +2,232 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WorldChat</title>
+
 <style>
-body{font-family:Arial;margin:0;background:#eef2f7;color:#172033}
-.header{background:#fff;padding:16px 20px;display:flex;justify-content:space-between;border-bottom:1px solid #ddd}
-.logo{font-weight:800;color:#2563eb;font-size:22px}
-.wrap{max-width:900px;margin:25px auto;padding:0 15px}
-.card{background:white;padding:24px;border-radius:18px;box-shadow:0 8px 30px #0001}
-input,select,button{font:inherit}
-input,select{width:100%;padding:12px;border:1px solid #d5dae3;border-radius:10px;box-sizing:border-box}
-label{display:block;font-weight:bold;margin:14px 0 7px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.btn{border:0;background:#2563eb;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;cursor:pointer}
-.full{width:100%;margin-top:18px}
-.note{margin-top:14px;background:#f8fafc;padding:10px;font-size:12px;color:#667085;border-radius:10px}
-.sub{color:#667085;font-size:14px}
-#chat{display:none}
-.toolbar{margin:18px 0}
-.users{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
-.user{background:#f8fafc;border:1px solid #e2e7ef;padding:8px 11px;border-radius:999px;font-size:13px;cursor:pointer}
-.user:hover{background:#eaf2ff}
-.messages{height:400px;overflow:auto;background:#f8fafc;border:1px solid #e2e7ef;border-radius:14px;padding:15px}
-.msg{display:flex;margin:8px 0}
-.me{justify-content:flex-end}
-.bubble{max-width:78%;background:#fff;border:1px solid #e1e6ee;border-radius:14px;padding:9px 12px}
-.me .bubble{background:#eaf2ff}
-.meta{font-size:12px;font-weight:bold;margin-bottom:4px}
-.send{display:flex;gap:10px;margin-top:12px}
-.send input{flex:1}
-.private{display:none}
-.private-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid #e2e7ef;position:relative}
-.back{border:0;background:#f1f5f9;border-radius:10px;padding:9px 12px;cursor:pointer;font-size:18px}
-.private-user{font-weight:800;flex:1}
-.dots{border:0;background:transparent;font-size:24px;cursor:pointer}
-.menu{display:none;position:absolute;right:0;top:45px;background:#fff;border:1px solid #ddd;border-radius:10px;box-shadow:0 8px 25px #0002;z-index:5;overflow:hidden}
-.menu button{display:block;width:130px;text-align:left;border:0;background:#fff;padding:11px 14px;cursor:pointer}
-.menu button:hover{background:#f1f5f9}
-.private-messages{height:330px;overflow:auto;background:#f8fafc;border:1px solid #e2e7ef;border-radius:14px;padding:15px;margin-top:12px}
-.pmsg{display:flex;margin:8px 0}
-.pmsg.mine{justify-content:flex-end}
-.ptext{max-width:78%;padding:9px 12px;border-radius:14px;background:#fff;border:1px solid #e1e6ee}
-.pmsg.mine .ptext{background:#eaf2ff}
-.start-note{text-align:center;color:#667085;font-size:13px;padding:25px}
-@media(max-width:650px){
-.grid{grid-template-columns:1fr}
-.send .btn{padding:12px}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f7fb;
+  color:#172033
+}
+.header{
+  height:64px;
+  background:white;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px
+}
+.logo{
+  font-size:21px;
+  font-weight:700
+}
+.sub{
+  color:#6b7280;
+  font-size:14px
+}
+.wrap{
+  max-width:900px;
+  margin:25px auto;
+  padding:0 15px
+}
+.card{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 4px 18px rgba(0,0,0,.04)
+}
+h1,h2{
+  margin-top:0
+}
+label{
+  display:block;
+  font-size:14px;
+  font-weight:600;
+  margin:12px 0 6px
+}
+input,select{
+  width:100%;
+  padding:12px;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+  outline:none;
+  font-size:15px
+}
+input:focus,select:focus{
+  border-color:#6366f1
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px
+}
+.btn{
+  border:0;
+  background:#4f46e5;
+  color:white;
+  padding:12px 18px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600
+}
+.btn.full{
+  width:100%;
+  margin-top:18px
+}
+.note{
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  padding:12px;
+  border-radius:10px;
+  margin-top:15px;
+  font-size:13px;
+  color:#64748b
+}
+.toolbar{
+  margin:15px 0
+}
+.users{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:15px
+}
+.user{
+  border:1px solid #e5e7eb;
+  background:#fff;
+  padding:9px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  font-size:14px
+}
+.user:hover{
+  background:#f8fafc
+}
+.messages,.private-messages{
+  height:330px;
+  overflow-y:auto;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:12px
+}
+.msg{
+  background:white;
+  border:1px solid #e5e7eb;
+  padding:9px 12px;
+  border-radius:12px;
+  margin-bottom:8px;
+  max-width:85%
+}
+.msg.mine{
+  margin-left:auto;
+  background:#eef2ff
+}
+.msg small{
+  display:block;
+  color:#6b7280;
+  font-size:11px;
+  margin-bottom:4px
+}
+.send{
+  display:flex;
+  gap:8px;
+  margin-top:10px
+}
+.send input{
+  flex:1
+}
+.private{
+  display:none
+}
+.private-head{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid #e5e7eb;
+  padding-bottom:12px;
+  margin-bottom:12px
+}
+.back,.dots{
+  border:0;
+  background:transparent;
+  font-size:25px;
+  cursor:pointer
+}
+.private-user{
+  flex:1;
+  font-weight:700
+}
+.private-user small{
+  display:block;
+  color:#6b7280;
+  font-weight:400;
+  font-size:12px;
+  margin-top:3px
+}
+.pmsg{
+  background:white;
+  border:1px solid #e5e7eb;
+  padding:9px 12px;
+  border-radius:12px;
+  margin-bottom:8px;
+  max-width:80%
+}
+.pmsg.mine{
+  margin-left:auto;
+  background:#eef2ff
+}
+.menu{
+  display:none;
+  position:absolute;
+  right:0;
+  top:42px;
+  background:white;
+  border:1px solid #ddd;
+  border-radius:10px;
+  box-shadow:0 5px 20px rgba(0,0,0,.12);
+  overflow:hidden;
+  z-index:5
+}
+.menu button{
+  display:block;
+  width:150px;
+  text-align:left;
+  border:0;
+  background:white;
+  padding:12px;
+  cursor:pointer
+}
+.menu button:hover{
+  background:#f3f4f6
+}
+.status{
+  margin-top:10px;
+  font-size:13px;
+  color:#16a34a
+}
+.error{
+  color:#dc2626
+}
+
+@media(max-width:600px){
+  .grid{
+    grid-template-columns:1fr
+  }
+  .send{
+    flex-direction:row
+  }
+  .send .btn{
+    padding-left:13px;
+    padding-right:13px
+  }
 }
 </style>
 </head>
@@ -55,16 +235,20 @@ label{display:block;font-weight:bold;margin:14px 0 7px}
 <body>
 
 <header class="header">
-<div class="logo">🌍 WorldChat</div>
-<div id="mini" class="sub"></div>
+  <div class="logo">🌍 WorldChat</div>
+  <div id="mini" class="sub"></div>
 </header>
 
 <main class="wrap">
 
+<!-- SETUP -->
 <section id="setup" class="card">
 
 <h1>Welcome to WorldChat 🌍</h1>
-<p class="sub">Create your profile and enter the global chat.</p>
+
+<p class="sub">
+Create your profile and enter the global chat.
+</p>
 
 <label>Username</label>
 <input id="username" maxlength="20" placeholder="Choose a username">
@@ -100,24 +284,32 @@ label{display:block;font-weight:bold;margin:14px 0 7px}
 </div>
 
 <div class="note">
-This version is for adults 18+ only. Do not share personal contact details.
+This service is for adults 18+ only.
+Do not share passwords, private addresses, phone numbers,
+or other sensitive personal information.
 </div>
 
-<button class="btn full" onclick="enterChat()">Enter WorldChat</button>
+<button class="btn full" onclick="enterChat()">
+Enter WorldChat
+</button>
+
+<div id="status" class="status"></div>
 
 </section>
 
 
-<section id="chat" class="card">
+<!-- CHAT -->
+<section id="chat" class="card" style="display:none">
+
+<div id="globalArea">
 
 <h2>Global Chat 💬</h2>
 
 <p id="info" class="sub"></p>
 
-<div id="globalArea">
-
 <div class="toolbar">
-<input id="search"
+<input
+id="search"
 placeholder="Search username, country, language or gender..."
 oninput="renderUsers()">
 </div>
@@ -127,16 +319,23 @@ oninput="renderUsers()">
 <div id="messages" class="messages"></div>
 
 <div class="send">
-<input id="message"
+
+<input
+id="message"
 maxlength="300"
 placeholder="Write a message..."
 onkeydown="if(event.key==='Enter')sendMessage()">
 
-<button class="btn" onclick="sendMessage()">Send</button>
-</div>
+<button class="btn" onclick="sendMessage()">
+Send
+</button>
 
 </div>
 
+</div>
+
+
+<!-- PRIVATE CHAT -->
 
 <div id="privateChat" class="private">
 
@@ -150,9 +349,17 @@ onkeydown="if(event.key==='Enter')sendMessage()">
 
 <div id="menu" class="menu">
 
-<button onclick="blockUser()">🚫 Block</button>
+<button onclick="viewProfile()">
+👤 View Profile
+</button>
 
-<button onclick="reportUser()">⚠️ Report</button>
+<button onclick="blockUser()">
+🚫 Block
+</button>
+
+<button onclick="reportUser()">
+⚠️ Report
+</button>
 
 </div>
 
@@ -162,12 +369,15 @@ onkeydown="if(event.key==='Enter')sendMessage()">
 
 <div class="send">
 
-<input id="privateMessage"
+<input
+id="privateMessage"
 maxlength="300"
 placeholder="Write a private message..."
 onkeydown="if(event.key==='Enter')sendPrivateMessage()">
 
-<button class="btn" onclick="sendPrivateMessage()">Send</button>
+<button class="btn" onclick="sendPrivateMessage()">
+Send
+</button>
 
 </div>
 
@@ -178,680 +388,927 @@ onkeydown="if(event.key==='Enter')sendPrivateMessage()">
 </main>
 
 
-<script>
-
-const countries=[
-
-['LK','🇱🇰','Sri Lanka'],
-['US','🇺🇸','United States'],
-['GB','🇬🇧','United Kingdom'],
-['IN','🇮🇳','India'],
-['CA','🇨🇦','Canada'],
-['AU','🇦🇺','Australia'],
-['DE','🇩🇪','Germany'],
-['FR','🇫🇷','France'],
-['IT','🇮🇹','Italy'],
-['ES','🇪🇸','Spain'],
-['BR','🇧🇷','Brazil'],
-['JP','🇯🇵','Japan'],
-['KR','🇰🇷','South Korea'],
-['CN','🇨🇳','China'],
-['RU','🇷🇺','Russia'],
-['AE','🇦🇪','United Arab Emirates'],
-['SA','🇸🇦','Saudi Arabia'],
-['SG','🇸🇬','Singapore'],
-['MY','🇲🇾','Malaysia'],
-['TH','🇹🇭','Thailand'],
-['PH','🇵🇭','Philippines'],
-['ID','🇮🇩','Indonesia'],
-['PK','🇵🇰','Pakistan'],
-['BD','🇧🇩','Bangladesh'],
-['NP','🇳🇵','Nepal'],
-['NZ','🇳🇿','New Zealand'],
-['ZA','🇿🇦','South Africa'],
-['MX','🇲🇽','Mexico'],
-['TR','🇹🇷','Türkiye'],
-['NL','🇳🇱','Netherlands']
-
-];
-
-const languages=[
-'English','Sinhala','Tamil','Hindi','Spanish','French',
-'German','Italian','Portuguese','Arabic','Japanese',
-'Korean','Chinese','Russian','Turkish','Dutch',
-'Malay','Thai','Bengali','Nepali'
-];
-
-
-for(const c of countries){
-
-let o=document.createElement('option');
-
-o.value=c[0];
-
-o.textContent=c[1]+' '+c[2];
-
-country.appendChild(o);
-
-}
-
-
-for(const l of languages){
-
-let o=document.createElement('option');
-
-o.value=l;
-
-o.textContent=l;
-
-language.appendChild(o);
-
-}
-
-
-for(let i=18;i<=100;i++){
-
-let o=document.createElement('option');
-
-o.value=i;
-
-o.textContent=i;
-
-age.appendChild(o);
-
-}
-
-
-let me=null;
-
-let users=[
-
-{name:'Alex',country:'US',language:'English',gender:'Male',age:24},
-
-{name:'Maya',country:'IN',language:'Hindi',gender:'Female',age:22},
-
-{name:'Ken',country:'JP',language:'Japanese',gender:'Male',age:28},
-
-{name:'Lina',country:'DE',language:'German',gender:'Female',age:25},
-
-{name:'Arun',country:'LK',language:'Sinhala',gender:'Male',age:21}
-
-];
-
-
-let privateUser=null;
-
-let privateChats={};
-
-
-function gc(x){
-
-return countries.find(c=>c[0]===x)||['','🌐','Unknown'];
-
-}
-
-
-function enterChat(){
-
-let name=username.value.trim();
-
-if(!name||!country.value||!language.value||!gender.value||!age.value){
-
-alert('Please complete all profile fields.');
-
-return;
-
-}
-
-me={
-
-name,
-
-country:country.value,
-
-language:language.value,
-
-gender:gender.value,
-
-age:+age.value
-
-};
-
-users=[me,...users.filter(u=>u.name.toLowerCase()!=name.toLowerCase())];
-
-setup.style.display='none';
-
-chat.style.display='block';
-
-let c=gc(me.country);
-
-mini.textContent=c[1]+' '+name;
-
-info.textContent=c[1]+' '+name+' • '+me.language+' • '+me.gender;
-
-renderUsers();
-
-addMessage('WorldChat','Welcome! Select a user to start a private chat.',false);
-
-}
-
-
-function renderUsers(){
-
-let q=search.value.toLowerCase().trim();
-
-usersDiv=document.getElementById('users');
-
-usersDiv.innerHTML='';
-
-users.filter(u=>{
-
-let c=gc(u.country);
-
-return (u.name+' '+c[2]+' '+u.language+' '+u.gender)
-.toLowerCase()
-.includes(q);
-
-}).forEach(u=>{
-
-let c=gc(u.country);
-
-let d=document.createElement('button');
-
-d.className='user';
-
-d.type='button';
-
-d.textContent=c[1]+' '+u.name;
-
-d.title=c[2]+' • '+u.language+' • '+u.gender;
-
-d.onclick=()=>openPrivateChat(u);
-
-usersDiv.appendChild(d);
-
-});
-
-}
-
-
-function sendMessage(){
-
-let v=message.value.trim();
-
-if(!v)return;
-
-addMessage(me.name,v,true);
-
-message.value='';
-
-}
-
-
-function addMessage(name,text,isMe){
-
-let r=document.createElement('div');
-
-r.className='msg'+(isMe?' me':'');
-
-let b=document.createElement('div');
-
-b.className='bubble';
-
-let m=document.createElement('div');
-
-m.className='meta';
-
-m.textContent=isMe?'You':name;
-
-let t=document.createElement('div');
-
-t.textContent=text;
-
-b.append(m,t);
-
-r.appendChild(b);
-
-messages.appendChild(r);
-
-messages.scrollTop=messages.scrollHeight;
-
-}
-
-
-function openPrivateChat(u){
-
-if(!u||u.name===me.name)return;
-
-privateUser=u;
-
-globalArea.style.display='none';
-
-privateChat.style.display='block';
-
-let c=gc(u.country);
-
-privateUserEl=document.getElementById('privateUser');
-
-privateUserEl.textContent=c[1]+' '+u.name;
-
-menu.style.display='none';
-
-renderPrivateMessages();
-
-}
-
-
-function closePrivateChat(){
-
-privateUser=null;
-
-privateChat.style.display='none';
-
-globalArea.style.display='block';
-
-menu.style.display='none';
-
-}
-
-
-function toggleMenu(){
-
-menu.style.display=
-menu.style.display==='block'?'none':'block';
-
-}
-
-
-function renderPrivateMessages(){
-
-let box=document.getElementById('privateMessages');
-
-box.innerHTML='';
-
-if(!privateUser)return;
-
-let key=privateUser.name;
-
-let list=privateChats[key]||[];
-
-if(!list.length){
-
-let n=document.createElement('div');
-
-n.className='start-note';
-
-n.textContent='Start a private chat with '+privateUser.name+'.';
-
-box.appendChild(n);
-
-return;
-
-}
-
-for(const item of list){
-
-let r=document.createElement('div');
-
-r.className='pmsg'+(item.mine?' mine':'');
-
-let b=document.createElement('div');
-
-b.className='ptext';
-
-b.textContent=item.text;
-
-r.appendChild(b);
-
-box.appendChild(r);
-
-}
-
-box.scrollTop=box.scrollHeight;
-
-}
-
-
-function sendPrivateMessage(){
-
-let v=privateMessage.value.trim();
-
-if(!v||!privateUser)return;
-
-let key=privateUser.name;
-
-if(!privateChats[key])privateChats[key]=[];
-
-privateChats[key].push({
-
-text:v,
-
-mine:true
-
-});
-
-privateMessage.value='';
-
-renderPrivateMessages();
-
-}
-
-
-function blockUser(){
-
-if(!privateUser)return;
-
-let name=privateUser.name;
-
-users=users.filter(u=>u.name!==name);
-
-alert(name+' has been blocked.');
-
-closePrivateChat();
-
-renderUsers();
-
-}
-
-
-function reportUser(){
-
-if(!privateUser)return;
-
-alert('Report submitted for '+privateUser.name+'.');
-
-menu.style.display='none';
-
-}
-
-</script>
-
-
-<!-- Firebase -->
+<!-- FIREBASE -->
 
 <script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore-compat.js"></script>
 
 
 <script>
 
-const firebaseConfig={
-
-apiKey:"AIzaSyCxMbGWolalaS_RQgjqyls44Lkn9lsWFYE",
-
-authDomain:"worldchat-4fc51.firebaseapp.com",
-
-projectId:"worldchat-4fc51",
-
-storageBucket:"worldchat-4fc51.firebasestorage.app",
-
-messagingSenderId:"569064178427",
-
-appId:"1:569064178427:web:7c65020d3dec55597a265e"
-
+const firebaseConfig = {
+  apiKey: "AIzaSyCxMbGWolalaS_RQgjqyls44Lkn9lsWFYE",
+  authDomain: "worldchat-4fc51.firebaseapp.com",
+  projectId: "worldchat-4fc51",
+  storageBucket: "worldchat-4fc51.firebasestorage.app",
+  messagingSenderId: "569064178427",
+  appId: "1:569064178427:web:7c65020d3dec55597a265e"
 };
-
 
 firebase.initializeApp(firebaseConfig);
 
-const auth=firebase.auth();
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-const db=firebase.firestore();
+let firebaseUid = null;
+let me = null;
+let privateUser = null;
+let privateUnsub = null;
+let globalUnsub = null;
+let usersUnsub = null;
 
-let firebaseUid=null;
+let blocked = new Set();
 
+let users = [];
 
-auth.signInAnonymously()
-
-.then(r=>{
-
-firebaseUid=r.user.uid;
-
-})
-
-.catch(e=>{
-
-console.error("Firebase auth:",e);
-
-});
-
-
-const oldEnterChat=enterChat;
-
-
-enterChat=async function(){
-
-oldEnterChat();
-
-if(!me||!firebaseUid)return;
-
-try{
-
-await db.collection("users")
-.doc(firebaseUid)
-.set({
-
-uid:firebaseUid,
-
-name:me.name,
-
-country:me.country,
-
-language:me.language,
-
-gender:me.gender,
-
-age:me.age,
-
-updatedAt:
-firebase.firestore.FieldValue.serverTimestamp()
-
-},{merge:true});
+const demoUsers = [
+  {
+    name:"Alex",
+    country:"US",
+    language:"English",
+    gender:"Male"
+  },
+  {
+    name:"Maya",
+    country:"IN",
+    language:"Hindi",
+    gender:"Female"
+  },
+  {
+    name:"Ken",
+    country:"JP",
+    language:"Japanese",
+    gender:"Male"
+  },
+  {
+    name:"Lina",
+    country:"DE",
+    language:"German",
+    gender:"Female"
+  }
+];
 
 
-listenFirebaseUsers();
+const countries = [
 
-}catch(e){
-
-console.error("User save:",e);
-
-}
-
-};
-
-
-function listenFirebaseUsers(){
-
-db.collection("users").onSnapshot(s=>{
-
-const remote=s.docs
-
-.map(d=>d.data())
-
-.filter(u=>u.uid!==firebaseUid);
-
-
-users=[
-
-{...me,uid:firebaseUid},
-
-...remote.map(u=>({
-
-name:u.name,
-
-country:u.country,
-
-language:u.language,
-
-gender:u.gender,
-
-age:u.age,
-
-uid:u.uid
-
-}))
+["LK","🇱🇰","Sri Lanka"],
+["US","🇺🇸","United States"],
+["GB","🇬🇧","United Kingdom"],
+["IN","🇮🇳","India"],
+["CA","🇨🇦","Canada"],
+["AU","🇦🇺","Australia"],
+["DE","🇩🇪","Germany"],
+["FR","🇫🇷","France"],
+["IT","🇮🇹","Italy"],
+["ES","🇪🇸","Spain"],
+["BR","🇧🇷","Brazil"],
+["JP","🇯🇵","Japan"],
+["KR","🇰🇷","South Korea"],
+["CN","🇨🇳","China"],
+["RU","🇷🇺","Russia"],
+["AE","🇦🇪","United Arab Emirates"],
+["SA","🇸🇦","Saudi Arabia"],
+["SG","🇸🇬","Singapore"],
+["MY","🇲🇾","Malaysia"],
+["TH","🇹🇭","Thailand"],
+["PH","🇵🇭","Philippines"],
+["ID","🇮🇩","Indonesia"],
+["NZ","🇳🇿","New Zealand"],
+["NP","🇳🇵","Nepal"],
+["BD","🇧🇩","Bangladesh"],
+["PK","🇵🇰","Pakistan"],
+["TR","🇹🇷","Turkey"],
+["NL","🇳🇱","Netherlands"],
+["SE","🇸🇪","Sweden"],
+["NO","🇳🇴","Norway"]
 
 ];
 
 
-renderUsers();
-
-},
-
-e=>console.error("Users:",e));
-
-}
-
-
-const oldOpenPrivateChat=openPrivateChat;
-
-
-openPrivateChat=function(u){
-
-oldOpenPrivateChat(u);
-
-if(u&&u.name!==me.name){
-
-listenPrivateFirebase(u);
-
-}
-
-};
-
-
-let privateUnsub=null;
-
-
-function chatId(a,b){
-
-return [a,b]
-
-.sort()
-
-.join("_")
-
-.replace(/[^a-zA-Z0-9_-]/g,"_");
-
-}
-
-
-function listenPrivateFirebase(u){
-
-if(privateUnsub)privateUnsub();
-
-if(!firebaseUid)return;
-
-
-privateUnsub=
-
-db.collection("privateChats")
-
-.doc(chatId(firebaseUid,u.uid||u.name))
-
-.collection("messages")
-
-.orderBy("createdAt","asc")
-
-.onSnapshot(s=>{
-
-privateChats[u.name]=s.docs.map(d=>({
-
-text:d.data().text,
-
-mine:d.data().uid===firebaseUid
-
-}));
-
-
-renderPrivateMessages();
-
-},
-
-e=>console.error("Private chat:",e));
-
-}
-
-
-const oldSendPrivateMessage=sendPrivateMessage;
-
-
-sendPrivateMessage=async function(){
-
-const v=privateMessage.value.trim();
-
-if(!v||!privateUser||!firebaseUid)return;
-
-
-const target=users.find(
-
-x=>x.name===privateUser.name
-
-);
-
-
-if(!target||!target.uid){
-
-oldSendPrivateMessage();
-
-return;
-
-}
-
-
-try{
-
-await db.collection("privateChats")
-
-.doc(chatId(firebaseUid,target.uid))
-
-.collection("messages")
-
-.add({
-
-uid:firebaseUid,
-
-text:v,
-
-createdAt:
-firebase.firestore.FieldValue.serverTimestamp()
+const languages = [
+
+"English",
+"Sinhala",
+"Tamil",
+"Hindi",
+"Spanish",
+"French",
+"German",
+"Italian",
+"Portuguese",
+"Arabic",
+"Japanese",
+"Korean",
+"Chinese",
+"Russian",
+"Turkish",
+"Dutch",
+"Malay",
+"Thai",
+"Bengali",
+"Nepali"
+
+];
+
+
+// COUNTRY OPTIONS
+
+countries.forEach(c=>{
+
+  const o=document.createElement("option");
+
+  o.value=c[0];
+
+  o.textContent=c[1]+" "+c[2];
+
+  document.getElementById("country").appendChild(o);
 
 });
 
 
-privateMessage.value='';
+// LANGUAGE OPTIONS
+
+languages.forEach(l=>{
+
+  const o=document.createElement("option");
+
+  o.textContent=l;
+
+  o.value=l;
+
+  document.getElementById("language").appendChild(o);
+
+});
+
+
+// AGE OPTIONS
+
+for(let i=18;i<=100;i++){
+
+  const o=document.createElement("option");
+
+  o.value=i;
+
+  o.textContent=i;
+
+  document.getElementById("age").appendChild(o);
 
 }
 
-catch(e){
 
-console.error("Send private:",e);
-
-alert("Message could not be sent. Check Firebase Firestore rules.");
-
-}
-
-};
+document.getElementById("country").value="LK";
+document.getElementById("language").value="English";
 
 
-const oldClosePrivateChat=closePrivateChat;
+// COUNTRY FINDER
 
+function getCountry(code){
 
-closePrivateChat=function(){
-
-if(privateUnsub){
-
-privateUnsub();
-
-privateUnsub=null;
+  return countries.find(c=>c[0]===code) || countries[0];
 
 }
 
-oldClosePrivateChat();
 
-};
+// FIREBASE AUTH READY
+
+const authReady = auth.signInAnonymously()
+
+.then(result=>{
+
+  firebaseUid=result.user.uid;
+
+  console.log("Firebase UID:",firebaseUid);
+
+})
+
+.catch(error=>{
+
+  console.error(error);
+
+  document.getElementById("status").innerHTML =
+  "<span class='error'>Firebase connection failed.</span>";
+
+});
+
+
+// ENTER CHAT
+
+async function enterChat(){
+
+  const name=document.getElementById("username").value.trim();
+
+  const country=document.getElementById("country").value;
+
+  const language=document.getElementById("language").value;
+
+  const gender=document.getElementById("gender").value;
+
+  const age=document.getElementById("age").value;
+
+
+  if(!name){
+
+    alert("Please enter a username.");
+
+    return;
+
+  }
+
+  if(!country || !language || !gender || !age){
+
+    alert("Please complete your profile.");
+
+    return;
+
+  }
+
+
+  me={
+    name:name,
+    country:country,
+    language:language,
+    gender:gender,
+    age:age,
+    uid:null
+  };
+
+
+  const c=getCountry(country);
+
+
+  document.getElementById("mini").textContent =
+  c[1]+" "+name;
+
+
+  document.getElementById("setup").style.display="none";
+
+  document.getElementById("chat").style.display="block";
+
+
+  document.getElementById("info").textContent =
+  c[1]+" "+c[2]+" • "+language;
+
+
+  document.getElementById("status").textContent =
+  "Connecting to WorldChat...";
+
+
+  try{
+
+    await authReady;
+
+    if(!firebaseUid){
+
+      throw new Error("Firebase authentication failed");
+
+    }
+
+
+    me.uid=firebaseUid;
+
+
+    // SAVE USER
+
+    await db.collection("users")
+    .doc(firebaseUid)
+    .set({
+
+      uid:firebaseUid,
+      name:name,
+      country:country,
+      language:language,
+      gender:gender,
+
+      // Do not publish exact age
+      ageBand:getAgeBand(age),
+
+      updatedAt:
+      firebase.firestore.FieldValue.serverTimestamp()
+
+    },{merge:true});
+
+
+    document.getElementById("status").textContent =
+    "Connected ✓";
+
+
+    listenUsers();
+
+    listenGlobalMessages();
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    document.getElementById("status").innerHTML =
+    "<span class='error'>Firebase error. Check Authentication and Firestore Rules.</span>";
+
+  }
+
+}
+
+
+// AGE BAND
+
+function getAgeBand(age){
+
+  age=Number(age);
+
+  if(age<=24)return "18-24";
+
+  if(age<=34)return "25-34";
+
+  if(age<=44)return "35-44";
+
+  if(age<=54)return "45-54";
+
+  if(age<=64)return "55-64";
+
+  return "65+";
+
+}
+
+
+// USERS REAL-TIME
+
+function listenUsers(){
+
+  if(usersUnsub) usersUnsub();
+
+
+  usersUnsub =
+  db.collection("users")
+  .onSnapshot(snapshot=>{
+
+    const remote=[];
+
+
+    snapshot.forEach(doc=>{
+
+      const u=doc.data();
+
+      if(u.uid!==firebaseUid){
+
+        remote.push({
+
+          name:u.name || "User",
+          country:u.country || "LK",
+          language:u.language || "English",
+          gender:u.gender || "",
+          ageBand:u.ageBand || "",
+          uid:u.uid
+
+        });
+
+      }
+
+    });
+
+
+    users=[
+      {
+        name:me.name,
+        country:me.country,
+        language:me.language,
+        gender:me.gender,
+        uid:firebaseUid
+      },
+      ...remote
+    ];
+
+
+    renderUsers();
+
+  },error=>{
+
+    console.error("Users error:",error);
+
+  });
+
+}
+
+
+// RENDER USERS
+
+function renderUsers(){
+
+  const box=document.getElementById("users");
+
+  const search=
+  document.getElementById("search").value
+  .trim()
+  .toLowerCase();
+
+
+  box.innerHTML="";
+
+
+  users
+  .filter(u=>!blocked.has(u.name))
+  .filter(u=>{
+
+    const c=getCountry(u.country);
+
+    const text=
+    u.name+" "+
+    c[2]+" "+
+    u.language+" "+
+    u.gender;
+
+    return text.toLowerCase().includes(search);
+
+  })
+  .forEach(u=>{
+
+    const c=getCountry(u.country);
+
+    const div=document.createElement("div");
+
+    div.className="user";
+
+    div.textContent=
+    c[1]+" "+u.name;
+
+    if(u.uid===firebaseUid){
+
+      div.textContent+=" (You)";
+
+    }
+    else{
+
+      div.onclick=()=>openPrivateChat(u);
+
+    }
+
+    box.appendChild(div);
+
+  });
+
+}
+
+
+// GLOBAL CHAT REAL-TIME
+
+function listenGlobalMessages(){
+
+  if(globalUnsub) globalUnsub();
+
+
+  globalUnsub =
+  db.collection("globalMessages")
+  .orderBy("createdAt","asc")
+  .limitToLast(100)
+  .onSnapshot(snapshot=>{
+
+    const box=document.getElementById("messages");
+
+    box.innerHTML="";
+
+
+    snapshot.forEach(doc=>{
+
+      const m=doc.data();
+
+      addGlobalMessage(m);
+
+    });
+
+
+    box.scrollTop=box.scrollHeight;
+
+  },error=>{
+
+    console.error("Global chat:",error);
+
+  });
+
+}
+
+
+// ADD GLOBAL MESSAGE
+
+function addGlobalMessage(m){
+
+  const box=document.getElementById("messages");
+
+  const div=document.createElement("div");
+
+  div.className="msg";
+
+
+  if(m.uid===firebaseUid){
+
+    div.classList.add("mine");
+
+  }
+
+
+  const c=getCountry(m.country || "LK");
+
+
+  const small=document.createElement("small");
+
+  small.textContent=
+  c[1]+" "+(m.name || "User");
+
+
+  const text=document.createElement("div");
+
+  text.textContent=m.text || "";
+
+
+  div.appendChild(small);
+
+  div.appendChild(text);
+
+  box.appendChild(div);
+
+}
+
+
+// SEND GLOBAL MESSAGE
+
+async function sendMessage(){
+
+  const input=document.getElementById("message");
+
+  const text=input.value.trim();
+
+
+  if(!text)return;
+
+
+  if(!firebaseUid){
+
+    alert("Please wait for Firebase connection.");
+
+    return;
+
+  }
+
+
+  try{
+
+    await db.collection("globalMessages").add({
+
+      uid:firebaseUid,
+
+      name:me.name,
+
+      country:me.country,
+
+      text:text,
+
+      createdAt:
+      firebase.firestore.FieldValue.serverTimestamp()
+
+    });
+
+
+    input.value="";
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    alert("Message could not be sent.");
+
+  }
+
+}
+
+
+// PRIVATE CHAT ID
+
+function chatId(a,b){
+
+  return [a,b].sort().join("_");
+
+}
+
+
+// OPEN PRIVATE CHAT
+
+function openPrivateChat(u){
+
+  if(!u)return;
+
+  if(blocked.has(u.name))return;
+
+  if(!u.uid){
+
+    alert("This user is not connected to Firebase.");
+
+    return;
+
+  }
+
+
+  privateUser=u;
+
+
+  document.getElementById("globalArea").style.display="none";
+
+  document.getElementById("privateChat").style.display="block";
+
+
+  const c=getCountry(u.country);
+
+
+  document.getElementById("privateUser").innerHTML=
+  c[1]+" "+escapeHtml(u.name)+
+  "<small>"+escapeHtml(c[2])+
+  " • "+escapeHtml(u.language)+
+  "</small>";
+
+
+  document.getElementById("menu").style.display="none";
+
+
+  listenPrivateMessages(u);
+
+}
+
+
+// PRIVATE REAL-TIME LISTENER
+
+function listenPrivateMessages(u){
+
+  if(privateUnsub)privateUnsub();
+
+
+  const id=chatId(firebaseUid,u.uid);
+
+
+  const chatRef=
+  db.collection("privateChats").doc(id);
+
+
+  // CREATE / UPDATE CHAT PARTICIPANTS
+
+  chatRef.set({
+
+    participants:[firebaseUid,u.uid],
+
+    updatedAt:
+    firebase.firestore.FieldValue.serverTimestamp()
+
+  },{merge:true});
+
+
+  privateUnsub=
+  chatRef
+  .collection("messages")
+  .orderBy("createdAt","asc")
+  .limitToLast(100)
+  .onSnapshot(snapshot=>{
+
+    const box=document.getElementById("privateMessages");
+
+    box.innerHTML="";
+
+
+    snapshot.forEach(doc=>{
+
+      const m=doc.data();
+
+      const div=document.createElement("div");
+
+      div.className="pmsg";
+
+
+      if(m.uid===firebaseUid){
+
+        div.classList.add("mine");
+
+      }
+
+
+      div.textContent=m.text || "";
+
+      box.appendChild(div);
+
+    });
+
+
+    box.scrollTop=box.scrollHeight;
+
+  },error=>{
+
+    console.error("Private chat:",error);
+
+  });
+
+}
+
+
+// SEND PRIVATE MESSAGE
+
+async function sendPrivateMessage(){
+
+  const input=document.getElementById("privateMessage");
+
+  const text=input.value.trim();
+
+
+  if(!text || !privateUser)return;
+
+
+  if(!firebaseUid){
+
+    alert("Firebase is not connected.");
+
+    return;
+
+  }
+
+
+  try{
+
+    const id=chatId(firebaseUid,privateUser.uid);
+
+
+    const chatRef=
+    db.collection("privateChats").doc(id);
+
+
+    await chatRef.set({
+
+      participants:[firebaseUid,privateUser.uid],
+
+      updatedAt:
+      firebase.firestore.FieldValue.serverTimestamp()
+
+    },{merge:true});
+
+
+    await chatRef
+    .collection("messages")
+    .add({
+
+      uid:firebaseUid,
+
+      text:text,
+
+      createdAt:
+      firebase.firestore.FieldValue.serverTimestamp()
+
+    });
+
+
+    input.value="";
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    alert("Private message could not be sent. Check Firestore Rules.");
+
+  }
+
+}
+
+
+// CLOSE PRIVATE CHAT
+
+function closePrivateChat(){
+
+  if(privateUnsub){
+
+    privateUnsub();
+
+    privateUnsub=null;
+
+  }
+
+
+  privateUser=null;
+
+
+  document.getElementById("privateChat").style.display="none";
+
+  document.getElementById("globalArea").style.display="block";
+
+  document.getElementById("menu").style.display="none";
+
+}
+
+
+// MENU
+
+function toggleMenu(){
+
+  const menu=document.getElementById("menu");
+
+  menu.style.display=
+  menu.style.display==="block"
+  ? "none"
+  : "block";
+
+}
+
+
+// VIEW PROFILE
+
+function viewProfile(){
+
+  if(!privateUser)return;
+
+
+  const c=getCountry(privateUser.country);
+
+
+  alert(
+    "Username: "+privateUser.name+
+    "\nCountry: "+c[1]+" "+c[2]+
+    "\nLanguage: "+privateUser.language+
+    "\nGender: "+privateUser.gender
+  );
+
+
+  document.getElementById("menu").style.display="none";
+
+}
+
+
+// BLOCK
+
+function blockUser(){
+
+  if(!privateUser)return;
+
+
+  blocked.add(privateUser.name);
+
+
+  alert(
+    privateUser.name+
+    " has been blocked."
+  );
+
+
+  closePrivateChat();
+
+  renderUsers();
+
+}
+
+
+// REPORT
+
+async function reportUser(){
+
+  if(!privateUser)return;
+
+
+  try{
+
+    await db.collection("reports").add({
+
+      reporterUid:firebaseUid,
+
+      reportedUid:privateUser.uid,
+
+      reportedName:privateUser.name,
+
+      createdAt:
+      firebase.firestore.FieldValue.serverTimestamp()
+
+    });
+
+
+    alert("Report submitted.");
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    alert("Report could not be submitted.");
+
+  }
+
+
+  document.getElementById("menu").style.display="none";
+
+}
+
+
+// HTML ESCAPE
+
+function escapeHtml(text){
+
+  const div=document.createElement("div");
+
+  div.textContent=text;
+
+  return div.innerHTML;
+
+}
 
 </script>
 
